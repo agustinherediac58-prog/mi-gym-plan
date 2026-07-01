@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mi Gym Plan">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mi Gym Plan</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ff7a00'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0f1115; --card:#1a1d24; --card2:#20242c; --accent:#ff7a00; --accent2:#ffb347;
+    --text:#f2f2f2; --muted:#9aa0ab; --line:#2a2e37; --good:#3ddc84; --you:#4da6ff; --wife:#ff6fae;
+    --basic:#8bc34a; --silver:#b0bec5; --gold:#ffca28; --goldplus:#ff8a00;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); padding-bottom:90px;}
+  header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,var(--bg) 85%,transparent); padding:14px 16px 8px;}
+  h1{font-size:19px; margin:0 0 2px; display:flex; align-items:center; gap:8px;}
+  .sub{color:var(--muted); font-size:12px; margin:0;}
+  .profile-bar{display:flex; gap:8px; margin-top:10px;}
+  .profile-btn{flex:1; padding:9px; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:13px; font-weight:600; text-align:center;}
+  .profile-btn.active.you{background:var(--you); color:#fff; border-color:var(--you);}
+  .profile-btn.active.wife{background:var(--wife); color:#fff; border-color:var(--wife);}
+  main{padding:0 16px;}
+  section{display:none;}
+  section.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:12px; position:relative;}
+  .card h3{margin:0 0 4px; font-size:16px; padding-right:34px;}
+  .addr{color:var(--muted); font-size:12.5px; margin:2px 0 8px;}
+  .tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
+  .tag{font-size:11px; background:var(--card2); color:var(--muted); padding:3px 8px; border-radius:20px;}
+  .plan-tag{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; color:#111;}
+  .plan-Basic\+{background:var(--basic);}
+  .plan-Silver{background:var(--silver);}
+  .plan-Gold{background:var(--gold);}
+  .plan-Gold\+{background:var(--goldplus); color:#fff;}
+  .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn{flex:1; min-width:80px; text-align:center; padding:9px; border-radius:10px; font-size:13px; font-weight:600; border:none; text-decoration:none; display:inline-block;}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-ghost{background:var(--card2); color:var(--text);}
+  .btn-danger{background:#3a2020; color:#ff8080;}
+  .fav-heart{position:absolute; top:14px; right:14px; font-size:20px; background:none; border:none; cursor:pointer; line-height:1;}
+  .fab-add{position:fixed; bottom:80px; right:16px; width:56px; height:56px; border-radius:50%; background:var(--accent); color:#fff; font-size:28px; border:none; box-shadow:0 6px 20px rgba(255,122,0,.4); z-index:20;}
+  nav{position:fixed; bottom:0; left:0; right:0; background:#14161c; border-top:1px solid var(--line); display:flex; padding:6px 6px calc(6px + env(safe-area-inset-bottom)); z-index:20;}
+  nav button{flex:1; background:none; border:none; color:var(--muted); font-size:10.5px; padding:8px 0; display:flex; flex-direction:column; align-items:center; gap:2px;}
+  nav button.active{color:var(--accent);}
+  nav button .ic{font-size:19px;}
+  .empty{color:var(--muted); text-align:center; padding:40px 10px; font-size:14px;}
+  .modal-bg{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:flex-end; z-index:50;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--card); width:100%; border-radius:20px 20px 0 0; padding:20px 16px calc(20px + env(safe-area-inset-bottom)); max-height:88vh; overflow-y:auto;}
+  .modal h2{margin:0 0 14px; font-size:18px;}
+  label{display:block; font-size:12px; color:var(--muted); margin:12px 0 4px;}
+  input,select,textarea{width:100%; background:var(--card2); border:1px solid var(--line); color:var(--text); padding:11px; border-radius:10px; font-size:15px; font-family:inherit;}
+  textarea{resize:vertical; min-height:60px;}
+  .who-select{display:flex; gap:8px; margin-top:6px;}
+  .who-opt{flex:1; text-align:center; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--card2); font-size:13px; font-weight:600; color:var(--muted);}
+  .who-opt.sel-you{background:var(--you); color:#fff; border-color:var(--you);}
+  .who-opt.sel-wife{background:var(--wife); color:#fff; border-color:var(--wife);}
+  .who-opt.sel-both{background:var(--good); color:#0f1115; border-color:var(--good);}
+  .modal-actions{display:flex; gap:10px; margin-top:18px;}
+  .visit-date{font-size:12px; color:var(--accent2); font-weight:700; margin-bottom:2px;}
+  .who-pill{font-size:11px; padding:3px 9px; border-radius:20px; font-weight:700;}
+  .who-pill.you{background:rgba(77,166,255,.2); color:var(--you);}
+  .who-pill.wife{background:rgba(255,111,174,.2); color:var(--wife);}
+  .who-pill.both{background:rgba(61,220,132,.2); color:var(--good);}
+  .section-title{font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin:18px 0 8px;}
+  .share-box{background:var(--card2); border-radius:12px; padding:12px; margin-top:10px;}
+  .share-box textarea{background:var(--bg);}
+  .toast{position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#222; color:#fff; padding:10px 18px; border-radius:20px; font-size:13px; z-index:60; opacity:0; transition:opacity .3s; white-space:nowrap;}
+  .toast.show{opacity:1;}
+  .search-box{margin-bottom:10px;}
+  .chips{display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:4px; -webkit-overflow-scrolling:touch;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto; padding:7px 13px; border-radius:20px; background:var(--card2); border:1px solid var(--line); color:var(--muted); font-size:12.5px; font-weight:600; white-space:nowrap;}
+  .chip.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .chip-label{font-size:11px; color:var(--muted); margin:10px 0 2px;}
+  .result-count{font-size:12px; color:var(--muted); margin:2px 0 10px;}
+  .stat-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:12px;}
+  .stat-card h3{margin:0 0 10px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px;}
+  .stat-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-name{font-size:14px;}
+  .stat-num{font-size:14px; font-weight:700; color:var(--accent2);}
+  .modal-gym-header{margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💪 Mi Gym Plan</h1>
+  <p class="sub">Catálogo Wellhub Toluca / CDMX — sin la app oficial</p>
+</header>
+
+<main>
+  <section id="sec-gyms" class="active">
+    <div class="card" style="padding:12px 14px; margin-bottom:12px;">
+      <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mi plan activo este mes</div>
+      <div class="chips" id="chipsMiPlan"></div>
+    </div>
+    <input class="search-box" id="buscador" placeholder="🔍 Buscar por nombre o zona..." oninput="render()">
+    <div class="chip-label">Actividad</div>
+    <div class="chips" id="chipsTipo"></div>
+    <div class="chip-label">Nivel de plan</div>
+    <div class="chips" id="chipsPlan"></div>
+    <div class="chip-label">Zona</div>
+    <div class="chips" id="chipsZona"></div>
+    <div class="result-count" id="resultCount"></div>
+    <div id="listaGyms"></div>
+  </section>
+
+  <section id="sec-calendario">
+    <div class="section-title">Próximas visitas</div>
+    <div id="listaProximas"></div>
+    <div class="section-title">Historial</div>
+    <div id="listaHistorial"></div>
+  </section>
+
+  <section id="sec-stats">
+    <div class="stat-card">
+      <h3>🏆 Gym más visitado</h3>
+      <div id="statTop"></div>
+    </div>
+    <div class="stat-card">
+      <h3>🔥 Actividad más practicada</h3>
+      <div id="statTipo"></div>
+    </div>
+    <div class="stat-card">
+      <h3>❤️ Favoritos</h3>
+      <div id="statFav"></div>
+    </div>
+    <div class="stat-card">
+      <h3>🕳️ Aún no visitados</h3>
+      <div id="statNoVisit"></div>
+    </div>
+  </section>
+
+  <section id="sec-compartir">
+    <div class="card">
+      <h3>📤 Compartir tu plan</h3>
+      <p class="addr">Envía tu semana a tu esposa por WhatsApp / Mensajes.</p>
+      <div class="row-actions">
+        <button class="btn btn-primary" onclick="compartirResumen()">Compartir resumen</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🔄 Sincronizar datos</h3>
+      <p class="addr">Cada quién usa la app en su propio celular. Genera tu código y envíaselo a tu esposa; ella lo pega para combinar visitas, favoritos e historial (y así las estadísticas reflejan a ambos).</p>
+      <div class="share-box">
+        <label>Tu código de datos</label>
+        <textarea id="exportBox" readonly rows="3"></textarea>
+        <div class="row-actions" style="margin-top:8px;">
+          <button class="btn btn-ghost" onclick="generarExport()">Generar código</button>
+          <button class="btn btn-primary" onclick="copiarExport()">Copiar</button>
+        </div>
+      </div>
+      <div class="share-box">
+        <label>Pegar código recibido para combinar</label>
+        <textarea id="importBox" rows="3" placeholder="Pega aquí el código que te compartieron"></textarea>
+        <button class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="importarDatos()">Combinar datos</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button class="active" id="tabGyms" onclick="cambiarTab('gyms')"><span class="ic">🏋️</span>Gyms</button>
+  <button id="tabCalendario" onclick="cambiarTab('calendario')"><span class="ic">📅</span>Calendario</button>
+  <button id="tabStats" onclick="cambiarTab('stats')"><span class="ic">📊</span>Stats</button>
+  <button id="tabCompartir" onclick="cambiarTab('compartir')"><span class="ic">🔗</span>Compartir</button>
+</nav>
+
+<!-- Modal: Detalle gym / Reservar -->
+<div class="modal-bg" id="modalVisita">
+  <div class="modal">
+    <h2 id="modalGymNombre" class="modal-gym-header">Reservar</h2>
+    <p class="addr" id="modalGymDireccion"></p>
+    <div class="tags" id="modalGymTags"></div>
+    <div class="row-actions" style="margin-bottom:6px;">
+      <a class="btn btn-ghost" id="modalGymMapa" target="_blank" href="#">Ver mapa</a>
+      <a class="btn btn-ghost" id="modalGymFotos" target="_blank" href="#">📷 Ver fotos</a>
+      <a class="btn btn-ghost" id="modalGymRedes" target="_blank" href="#">Redes</a>
+    </div>
+    <div class="row-actions" id="modalGymTelWrap" style="margin-bottom:6px;">
+      <a class="btn btn-ghost" id="modalGymTel" href="#">📞 Llamar para reservar</a>
+    </div>
+    <hr style="border-color:var(--line); margin:14px 0;">
+    <label>Fecha</label>
+    <input id="visitaFecha" type="date">
+    <label>Hora</label>
+    <input id="visitaHora" type="time" value="07:00">
+    <label>¿Quién va?</label>
+    <div class="who-select">
+      <div class="who-opt" id="whoYou" onclick="setWho('you')">Tú</div>
+      <div class="who-opt" id="whoWife" onclick="setWho('wife')">Esposa</div>
+      <div class="who-opt" id="whoBoth" onclick="setWho('both')">Ambos</div>
+    </div>
+    <label>Notas (opcional)</label>
+    <input id="visitaNotas" placeholder="Ej. clase de spinning 7am">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalVisita')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarVisita()">Reservar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- catálogo estático (de tu Excel) ----------
+const CATALOGO = [{"id": "g1", "nombre": "EK Bars", "nota": "Funcional", "tipo": "Hiit Funcional", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 111, Santa Cruz, 52140 Barrio, Méx., México", "plan": 299, "redes": "https://facebook.com/EKBars.MX", "telefono": "722 145 1376", "wellhub": "EK BARS Metepec - Santa Cruz"}, {"id": "g2", "nombre": "Mr Fit Metepec", "nota": "Barato", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 601, Zona Sin Asignación de Nombre de Col 1, 52169 Metepec, Méx., México", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Metepec - Zona Sin Asignación de Nombre de Colonia 1"}, {"id": "g3", "nombre": "Mr Fit Zina", "nota": "Barato", "tipo": "Gym", "zona": "Toluca", "direccion": "MrFit Zinacantepec - Google Maps", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Mx - San Miguel Zinacantepec"}, {"id": "g4", "nombre": "Jungle Gym", "nota": "Barato", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Prof.ª María del Refugio Alejandro Tarrello 435, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/jungle_gym.fitness/", "telefono": "729 723 0398", "wellhub": "Jungle Gym - Delegación San Buenaventura"}, {"id": "g5", "nombre": "Dynamic Gym", "nota": "Nice", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Alpinismo (Profra. Ma. del Refugio Alejandro Tarrello) 323, San Antonio Buenavista, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/dynamic_gym.oficial_/", "telefono": "722 317 4499", "wellhub": "Dynamic Gym - San Antonio Buenavista"}, {"id": "g6", "nombre": "Gym Mom Rose", "nota": "box", "tipo": "Box/Gym", "zona": "Alpinismo", "direccion": "Jesús Reyes Heroles 1203, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.facebook.com/p/gym-mom-rose-100090310705365/", "telefono": "722 314 0382", "wellhub": "Gym Mom Rose - Delegación San Buenaventura"}, {"id": "g7", "nombre": "Envision Fitness", "nota": "Nice", "tipo": "Gym", "zona": "Limoncito", "direccion": "Envision Fitness Culture - Google Maps", "plan": 299, "redes": "https://instagram.com/envisionmx", "telefono": "55 1234 5678", "wellhub": "Envision Fitness Culture - San Felipe Tlalmimilolpan"}, {"id": "g8", "nombre": "Capital fitness toluca", "nota": "", "tipo": "Otro", "zona": "Colon", "direccion": "Calle Gral. Venustiano Carranza 20 Pte. 800, Residencial Colón y Col Ciprés, 50120 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://facebook.com/capitalgymmx", "telefono": "722 719 8034", "wellhub": "Capital Fitness Toluca - Toluca de Lerdo"}, {"id": "g9", "nombre": "9 Round Metepec", "nota": "", "tipo": "Box", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 299, "redes": "https://9round.mx/", "telefono": "722 271 0780", "wellhub": "9 Round - Metepec - Metepec"}, {"id": "g10", "nombre": "Fitsi samara", "nota": "", "tipo": "gym", "zona": "Samara santa fe", "direccion": "Antonio Dovali Jaime 70, Santa Fe, Zedec Sta Fé, Álvaro Obregón, 01376 Ciudad de México, CDMX, México", "plan": 299, "redes": "https://fitsi.com.mx", "telefono": "55 3907 0477", "wellhub": "Fitsi Samara - Santa Fe"}, {"id": "g11", "nombre": "Black Mamba", "nota": "box", "tipo": "Box", "zona": "Metepec", "direccion": "C. Ceboruco Manzana 029, Colonia Solidaridad Electricistas, 52168 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://instagram.com/blackmambammabox", "telefono": "722 221 7974", "wellhub": "Black Mamba - Colonia Solidaridad Electricistas"}, {"id": "g12", "nombre": "Cuantico", "nota": "Nice", "tipo": "Multi", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52150 Metepec, Méx Metepec, Manzana 032, Coaxustenco, 52150 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://linktr.ee/cuanticowellness?fbclid=paq0xdswlsoudlehrua2flbqixmqabpy1eu1z9hoprx54pki_r1euak6e49zhmfl5d4ye1u53i7sx98wqgptfq2f8x_aem_7qzuucllfy2u14fixtzmvq", "telefono": "722 474 7902", "wellhub": "Cuantico Wellness - Coaxustenco"}, {"id": "g13", "nombre": "Performa", "nota": "Nice", "tipo": "Funcional", "zona": "Toluca", "direccion": "CF722-Fitness CrossFit Strength & Conditioning - Google Maps", "plan": 549, "redes": "https://performa.mx/", "telefono": "722 245 5583", "wellhub": "Performa - Toluca de Lerdo"}, {"id": "g14", "nombre": "Spider Padel", "nota": "", "tipo": "Padel", "zona": "Metepec", "direccion": "794M+VPW MZ 077, México", "plan": 899, "redes": "https://www.spiderpadel.com/", "telefono": "720 882 8189", "wellhub": "Spider Padel Metepec - Zona Sin Asignación de Nombre de Colonia 1"}, {"id": "g15", "nombre": "Zentro studio", "nota": "Nice", "tipo": "Cycling", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52140 Metepec, Méx., Mexico", "plan": 899, "redes": "https://zentrostudio.com/", "telefono": "722 804 8008", "wellhub": "Zentro Studio - Coaxustenco"}, {"id": "g16", "nombre": "AZZERO studio", "nota": "Nice", "tipo": "Boxx", "zona": "Metepec", "direccion": "C. Leona Vicario 936, La Purisima, 52156 San Francisco Coaxusco, Méx., México", "plan": 899, "redes": "https://azzerostudio.mx/", "telefono": "722 212 7557", "wellhub": "AZZERO studio - La Purisima"}, {"id": "g17", "nombre": "SFC Metepec", "nota": "Nice", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 761, La Purisima, 52169 Toluca de Lerdo, Méx., México", "plan": 899, "redes": "https://www.facebook.com/p/Supreme-Fitness-Club-61556648472042/", "telefono": "722 162 6955", "wellhub": "Supreme Fitness Club Metepec - La Purisima"}, {"id": "g18", "nombre": "Move Cycling studio", "nota": "Nice", "tipo": "Otro", "zona": "Metepec", "direccion": "Plaza venecia", "plan": 899, "redes": "https://www.instagram.com/move.cyclingstudio", "telefono": "722 437 5081", "wellhub": "Move Cycling Studio Plaza Venecia - Santa Cruz"}, {"id": "g19", "nombre": "Cypro", "nota": "", "tipo": "Cycling", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "telefono": "722 708 2691", "wellhub": "Cypro Indoor Cycling Studio - Providencia, La-colonia-"}, {"id": "g20", "nombre": "One Indoor Studio", "nota": "", "tipo": "Cycling", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 899, "redes": "https://oneindoorstudio.com", "telefono": "722 375 4190", "wellhub": "One Indoor Studio - San Salvador Tizatlali"}, {"id": "g21", "nombre": "One More Rep", "nota": "", "tipo": "Gym Nice", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622-Local 33, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "https://instagram.com/1.morerep.fs", "telefono": "722 168 3182", "wellhub": "One More Rep Fitness Studio - Providencia, La-colonia-"}, {"id": "g22", "nombre": "TRYHARD Training Club", "nota": "", "tipo": "Hyrox", "zona": "", "direccion": "C. Juan Aldama 909-4 4to Piso, Centro, 50000 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://www.instagram.com/tryhardtrainingclub/", "telefono": "56 6802 7605", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-training-club-centro/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub"}, {"id": "g23", "nombre": "TRYHARD GYM", "nota": "Nice", "tipo": "Gym Ciclo Hyrox", "zona": "Colon", "direccion": "C. Juan Aldama 909, Francisco Murguía, 50130 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://instagram.com/tryhard_mexico", "telefono": "722 486 9873", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-gym-francisco-murguia/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub"}, {"id": "g24", "nombre": "Smart Fit Zentrika", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Lateral Autopista México-Toluca 1235, Lomas de Santa Fe, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Zentrika - Wellhub"}, {"id": "g25", "nombre": "Smart Fit Patio Santa Fe", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma 400, Santa Fe, Peña Blanca, Álvaro Obregón, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Patio Santa Fe - Wellhub"}, {"id": "g26", "nombre": "9 Round - Samara", "nota": "Box/HIIT", "tipo": "Box / HIIT", "zona": "Santa Fe", "direccion": "Antonio Dovalí Jaime 70, Ready to Fit Samara Shops, Santa Fe, CDMX", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5292 8490", "wellhub": "9 Round Samara - Wellhub"}, {"id": "g27", "nombre": "Okinawa Karate Do", "nota": "Artes Marciales", "tipo": "Artes Marciales", "zona": "Santa Fe", "direccion": "Av. Santa Fe, Contadero, Cuajimalpa de Morelos, CDMX", "plan": 549, "redes": "https://www.okinawakaratedo.com.mx/", "telefono": "", "wellhub": "Okinawa Karate Do Santa Fe"}, {"id": "g28", "nombre": "ADN Gym - Interlomas", "nota": "Pesos Libres", "tipo": "Gym", "zona": "Interlomas", "direccion": "Hacienda de las Palmas, Huixquilucan, EdoMex", "plan": 549, "redes": "https://www.instagram.com/adngym_/", "telefono": "", "wellhub": "ADN Gym Interlomas"}, {"id": "g29", "nombre": "9 Round - Centtral", "nota": "HIIT Funcional", "tipo": "Box / HIIT", "zona": "Interlomas", "direccion": "Blvd. Interlomas 5, Centtral Interlomas, Huixquilucan, EdoMex", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5925 0244", "wellhub": "9 Round Centtral Interlomas"}, {"id": "g30", "nombre": "Action Black Interlomas", "nota": "HIIT Premium", "tipo": "Funcional / HIIT", "zona": "Interlomas", "direccion": "Paseo Interlomas, Vialidad de la Barranca, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/actionblack.co/", "telefono": "", "wellhub": "Action Black Interlomas"}, {"id": "g31", "nombre": "SM Martial Arts & Workout", "nota": "Box/Funcional", "tipo": "Boxeo / Funcional", "zona": "Interlomas", "direccion": "Av. Interlomas, San Fernando, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/smmartialarts/", "telefono": "", "wellhub": "SM Martial Arts - Wellhub"}, {"id": "g32", "nombre": "Neon Fitness Club", "nota": "Tradicional", "tipo": "Gym", "zona": "Toluca Centro", "direccion": "C. Primero de Mayo 300, Centro, 50000 Toluca de Lerdo, Méx.", "plan": 299, "redes": "https://www.facebook.com/NeonFitnessClub/", "telefono": "722 214 4321", "wellhub": "Neon Fitness Club Toluca"}, {"id": "g33", "nombre": "CrossFit Neos", "nota": "Fuerza / WOD", "tipo": "Crossfit", "zona": "Toluca Centro", "direccion": "Av. Pino Suárez 405, Centro, Toluca de Lerdo, Méx.", "plan": 899, "redes": "https://www.instagram.com/crossfitneos/", "telefono": "722 581 2190", "wellhub": "CrossFit Neos - Wellhub"}, {"id": "g34", "nombre": "Move Cycling Studio", "nota": "Indoor Cycling", "tipo": "Cycling / HIIT", "zona": "Plaza Colón", "direccion": "Paseo Colón 302, Residencial Colón, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/movecyclingstudio/", "telefono": "722 914 2035", "wellhub": "Move Cycling Studio Colón"}, {"id": "g35", "nombre": "Jiraf Authentic Pilates", "nota": "Pilates Reformer", "tipo": "Pilates", "zona": "Plaza Juárez", "direccion": "Ignacio López Rayón 202, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/jirafpilates/", "telefono": "", "wellhub": "Jiraf Authentic Pilates"}, {"id": "g36", "nombre": "Ventura Fitness Toluca", "nota": "Pesos / Cardio", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Benito Juárez García 410, Centro, Toluca, Méx.", "plan": 549, "redes": "https://www.instagram.com/venturafitness/", "telefono": "722 190 4455", "wellhub": "Ventura Fitness - Wellhub"}, {"id": "g37", "nombre": "FitBeat Lab Toluca", "nota": "Yoga/Pilates", "tipo": "Estudio", "zona": "Zona Centro", "direccion": "Calle Aquiles Serdán 104, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/fitbeatlab/", "telefono": "", "wellhub": "FitBeat Lab Toluca"}, {"id": "g38", "nombre": "Gravity Center Gym", "nota": "Cardio/Fuerza", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Heriberto Enríquez 602, Ceboruco, Toluca, Méx.", "plan": 299, "redes": "https://www.facebook.com/GravityCenterGym/", "telefono": "722 217 0981", "wellhub": "Gravity Center Gym - Wellhub"}, {"id": "g39", "nombre": "Sportium Desierto de los Leones", "nota": "Club con Alberca/Gym", "tipo": "Club / Alberca", "zona": "Desierto de los Leones", "direccion": "Calz. Desierto de los Leones 5525, Olivar de los Padres, CDMX", "plan": 899, "redes": "https://www.instagram.com/sportium_mx/", "telefono": "55 1000 2500", "wellhub": "Sportium Desierto de los Leones"}, {"id": "g40", "nombre": "Pádel Club Metepec", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Metepec", "direccion": "Av. Tecnológico, San Jerónimo Chicahualco, Metepec", "plan": 899, "redes": "https://www.instagram.com/padelclub/", "telefono": "N/A", "wellhub": "Pádel Club Metepec - Wellhub"}, {"id": "g41", "nombre": "Winner Padel Santa Fe", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Santa Fe", "direccion": "Vasco de Quiroga 3800, Santa Fe, CDMX", "plan": 899, "redes": "https://www.instagram.com/winnerpadel/", "telefono": "N/A", "wellhub": "Winner Padel Santa Fe"}, {"id": "g42", "nombre": "Padel Toluca Centro", "nota": "Canchas Indoor", "tipo": "Pádel", "zona": "Toluca", "direccion": "Paseo Tollocan, Col. Vértice, Toluca", "plan": 549, "redes": "https://www.instagram.com/padeltoluca/", "telefono": "N/A", "wellhub": "Padel Toluca - Wellhub"}, {"id": "g43", "nombre": "Centro Acuático Metepec", "nota": "Alberca Techada / Natación", "tipo": "Alberca", "zona": "Metepec", "direccion": "Av. Estado de México, Barrio de San Miguel, Metepec", "plan": 549, "redes": "N/A", "telefono": "722 235 0122", "wellhub": "Centro Acuático Metepec"}, {"id": "g44", "nombre": "Acuática Zinacantepec", "nota": "Alberca Semiolímpica", "tipo": "Alberca", "zona": "Zinacantepec", "direccion": "Circuito Vial Acahualco, San Miguel Zinacantepec", "plan": 299, "redes": "N/A", "telefono": "722 123 4567", "wellhub": "Acuática Zinacantepec - Wellhub"}, {"id": "g45", "nombre": "Swim & Fitness Santa Fe", "nota": "Alberca Climatizada", "tipo": "Alberca / Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma, Santa Fe, CDMX", "plan": 899, "redes": "N/A", "telefono": "N/A", "wellhub": "Swim & Fitness Santa Fe"}, {"id": "g46", "nombre": "Acuática Interlomas", "nota": "Natación / Aqua HIIT", "tipo": "Alberca", "zona": "Interlomas", "direccion": "Vialidad de la Barranca, Interlomas, Huixquilucan", "plan": 899, "redes": "https://www.instagram.com/acuatica_interlomas/", "telefono": "55 5245 1122", "wellhub": "Acuática Interlomas"}];
+
+const COSTO_PLAN = {'Basic+':299.90,'Silver':549.90,'Gold':899.90,'Gold+':1299.90};
+function planNombre(costo){
+  if(costo>=1299) return 'Gold+';
+  if(costo>=899) return 'Gold';
+  if(costo>=549) return 'Silver';
+  return 'Basic+';
+}
+function planLabel(nombre){
+  return nombre + ' $' + COSTO_PLAN[nombre].toFixed(2);
+}
+function categoria(tipo){
+  const t = (tipo||'').toLowerCase();
+  if(t.includes('pádel')||t.includes('padel')) return 'Pádel';
+  if(t.includes('alberca')||t.includes('natación')||t.includes('swim')) return 'Alberca';
+  if(t.includes('box')||t.includes('hiit')||t.includes('boxeo')) return 'Box/HIIT';
+  if(t.includes('cycl')) return 'Cycling';
+  if(t.includes('crossfit')||t.includes('hyrox')) return 'Crossfit';
+  if(t.includes('pilates')) return 'Pilates';
+  if(t.includes('marcial')||t.includes('karate')) return 'Artes Marciales';
+  if(t.includes('funcional')) return 'Funcional';
+  if(t.includes('club')) return 'Club';
+  if(t.includes('gym')) return 'Gym';
+  return 'Otro';
+}
+CATALOGO.forEach(g=>{ g.categoria = categoria(g.tipo); g.planNombre = planNombre(g.plan); });
+
+// ---------- estado ----------
+let DB = JSON.parse(localStorage.getItem('gymplan_db') || '{"visitas":[],"favoritos":[]}');
+if(!DB.favoritos) DB.favoritos = [];
+let currentTab = 'gyms';
+let selectedWho = 'both';
+let filtroTipo = 'Todos';
+let filtroPlan = 'Todos';
+let filtroZona = 'Todas';
+let miPlan = localStorage.getItem('gymplan_miplan') || null;
+let gymActivo = null;
+
+function save(){ localStorage.setItem('gymplan_db', JSON.stringify(DB)); }
+
+function setMiPlan(p){
+  miPlan = (miPlan===p) ? null : p;
+  if(miPlan) localStorage.setItem('gymplan_miplan', miPlan); else localStorage.removeItem('gymplan_miplan');
+  render();
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+// ---------- tabs ----------
+function cambiarTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  render();
+}
+
+// ---------- filtros / chips ----------
+function construirChips(){
+  const planesTodos = ['Basic+','Silver','Gold','Gold+'];
+  document.getElementById('chipsMiPlan').innerHTML = planesTodos.map(p=>
+    `<button class="chip ${p===miPlan?'active':''}" onclick="setMiPlan('${p}')">${planLabel(p)}</button>`
+  ).join('');
+
+  const tipos = ['Todos', ...new Set(CATALOGO.map(g=>g.categoria))].sort((a,b)=> a==='Todos'?-1:b==='Todos'?1:a.localeCompare(b));
+  document.getElementById('chipsTipo').innerHTML = tipos.map(t=>
+    `<button class="chip ${t===filtroTipo?'active':''}" onclick="setFiltroTipo('${t}')">${t}</button>`
+  ).join('');
+
+  const planes = ['Todos','Basic+','Silver','Gold','Gold+'];
+  let planChips = planes.map(p=>
+    `<button class="chip ${p===filtroPlan?'active':''}" onclick="setFiltroPlan('${p}')">${p==='Todos'?'Todos':planLabel(p)}</button>`
+  ).join('');
+  if(miPlan){
+    planChips = `<button class="chip ${filtroPlan==='__miplan__'?'active':''}" onclick="setFiltroPlan('__miplan__')">✅ Dentro de mi plan</button>` + planChips;
+  }
+  document.getElementById('chipsPlan').innerHTML = planChips;
+
+  const zonas = ['Todas', ...new Set(CATALOGO.map(g=>g.zona).filter(Boolean))].sort((a,b)=> a==='Todas'?-1:b==='Todas'?1:a.localeCompare(b));
+  document.getElementById('chipsZona').innerHTML = zonas.map(z=>
+    `<button class="chip ${z===filtroZona?'active':''}" onclick="setFiltroZona('${z.replace(/'/g,"\\'")}')">${z}</button>`
+  ).join('');
+}
+function setFiltroTipo(t){ filtroTipo = t; render(); }
+function setFiltroPlan(p){ filtroPlan = p; render(); }
+function setFiltroZona(z){ filtroZona = z; render(); }
+
+// ---------- link a fotos (Google Maps) ----------
+function linkFotos(g){
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(g.nombre + ' ' + g.direccion);
+}
+
+// ---------- favoritos ----------
+function toggleFav(id){
+  const i = DB.favoritos.indexOf(id);
+  if(i>=0) DB.favoritos.splice(i,1); else DB.favoritos.push(id);
+  save(); render();
+}
+
+// ---------- modal reservar ----------
+function abrirModalVisita(gymId){
+  gymActivo = CATALOGO.find(g=>g.id===gymId);
+  if(!gymActivo) return;
+  document.getElementById('modalGymNombre').textContent = gymActivo.nombre;
+  document.getElementById('modalGymDireccion').textContent = gymActivo.direccion;
+  document.getElementById('modalGymTags').innerHTML = `
+    <span class="plan-tag plan-${gymActivo.planNombre.replace('+','\\\\+')}">${planLabel(gymActivo.planNombre)}</span>
+    <span class="tag">${gymActivo.categoria}</span>
+    ${gymActivo.zona ? `<span class="tag">📍 ${gymActivo.zona}</span>` : ''}
+  `;
+  document.getElementById('modalGymMapa').href = 'https://maps.apple.com/?q='+encodeURIComponent(gymActivo.direccion);
+  document.getElementById('modalGymFotos').href = linkFotos(gymActivo);
+  const redesEl = document.getElementById('modalGymRedes');
+  if(gymActivo.redes && gymActivo.redes.startsWith('http')){
+    redesEl.href = gymActivo.redes; redesEl.style.display='inline-block';
+  } else { redesEl.style.display='none'; }
+  const telWrap = document.getElementById('modalGymTelWrap');
+  const telEl = document.getElementById('modalGymTel');
+  if(gymActivo.telefono && gymActivo.telefono.match(/\d{6,}/)){
+    telEl.href = 'tel:'+gymActivo.telefono.replace(/\s/g,'');
+    telEl.textContent = '📞 '+gymActivo.telefono;
+    telWrap.style.display='flex';
+  } else { telWrap.style.display='none'; }
+  document.getElementById('visitaFecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('visitaNotas').value='';
+  setWho('both');
+  document.getElementById('modalVisita').classList.add('show');
+}
+function cerrarModal(id){ document.getElementById(id).classList.remove('show'); }
+
+function setWho(w){
+  selectedWho = w;
+  ['You','Wife','Both'].forEach(k=>document.getElementById('who'+k).classList.remove('sel-you','sel-wife','sel-both'));
+  document.getElementById('who'+w.charAt(0).toUpperCase()+w.slice(1)).classList.add('sel-'+w);
+}
+
+function guardarVisita(){
+  const fecha = document.getElementById('visitaFecha').value;
+  const hora = document.getElementById('visitaHora').value;
+  if(!gymActivo || !fecha){ toast('Completa la fecha'); return; }
+  DB.visitas.push({
+    id: Date.now().toString(),
+    gymId: gymActivo.id,
+    fecha, hora,
+    who: selectedWho,
+    notas: document.getElementById('visitaNotas').value.trim(),
+    hecha: false
+  });
+  save();
+  cerrarModal('modalVisita');
+  cambiarTab('calendario');
+  toast('¡Reservado! No olvides agregarlo a tu Calendario');
+}
+
+function marcarHecha(id){
+  const v = DB.visitas.find(x=>x.id===id);
+  if(v){ v.hecha = true; save(); render(); toast('Marcada como realizada'); }
+}
+function borrarVisita(id){
+  DB.visitas = DB.visitas.filter(v=>v.id!==id);
+  save(); render();
+}
+
+// ---------- .ics ----------
+function descargarICS(visitaId){
+  const v = DB.visitas.find(x=>x.id===visitaId);
+  const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)', direccion:''};
+  const dt = v.fecha.replace(/-/g,'') + 'T' + v.hora.replace(':','') + '00';
+  const dtEnd = v.fecha.replace(/-/g,'') + 'T' + String(parseInt(v.hora.split(':')[0])+1).padStart(2,'0') + v.hora.split(':')[1] + '00';
+  const who = v.who==='both' ? 'Tú y tu esposa' : (v.who==='you' ? 'Tú' : 'Tu esposa');
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MiGymPlan//ES',
+    'BEGIN:VEVENT',
+    'UID:'+v.id+'@migymplan',
+    'DTSTAMP:'+dt,
+    'DTSTART:'+dt,
+    'DTEND:'+dtEnd,
+    'SUMMARY:Gym - '+lugar.nombre,
+    'DESCRIPTION:Asiste: '+who+(v.notas?(' | '+v.notas):''),
+    'LOCATION:'+lugar.direccion,
+    'BEGIN:VALARM','TRIGGER:-PT30M','ACTION:DISPLAY','DESCRIPTION:Recordatorio gym','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'visita-gym.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ---------- render catálogo ----------
+function render(){
+  construirChips();
+  const q = (document.getElementById('buscador').value || '').toLowerCase();
+  let lista = CATALOGO.filter(g=>{
+    if(filtroTipo!=='Todos' && g.categoria!==filtroTipo) return false;
+    if(filtroPlan==='__miplan__'){
+      if(miPlan && COSTO_PLAN[g.planNombre] > COSTO_PLAN[miPlan]) return false;
+    } else if(filtroPlan!=='Todos' && g.planNombre!==filtroPlan) return false;
+    if(filtroZona!=='Todas' && g.zona!==filtroZona) return false;
+    if(q && !(g.nombre.toLowerCase().includes(q) || g.zona.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  document.getElementById('resultCount').textContent = lista.length + ' gyms encontrados';
+  const lg = document.getElementById('listaGyms');
+  if(lista.length===0){
+    lg.innerHTML = '<div class="empty">No hay gyms con esos filtros.</div>';
+  } else {
+    lg.innerHTML = lista.map(g=>{
+      const isFav = DB.favoritos.includes(g.id);
+      return `
+      <div class="card">
+        <button class="fav-heart" onclick="toggleFav('${g.id}')">${isFav?'❤️':'🤍'}</button>
+        <h3>${g.nombre}</h3>
+        <p class="addr">📍 ${g.zona ? g.zona+' — ' : ''}${g.direccion}</p>
+        <div class="tags">
+          <span class="plan-tag plan-${g.planNombre.replace('+','\\+')}">${planLabel(g.planNombre)}</span>
+          <span class="tag">${g.categoria}</span>
+          ${g.nota ? `<span class="tag">${g.nota}</span>` : ''}
+        </div>
+        <div class="row-actions">
+          <a class="btn btn-ghost" target="_blank" href="https://maps.apple.com/?q=${encodeURIComponent(g.direccion)}">Ver mapa</a>
+          <a class="btn btn-ghost" target="_blank" href="${linkFotos(g)}">📷 Fotos</a>
+          <button class="btn btn-primary" onclick="abrirModalVisita('${g.id}')">Reservar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // calendario
+  const hoy = new Date().toISOString().slice(0,10);
+  const proximas = DB.visitas.filter(v=>!v.hecha && v.fecha>=hoy).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  const historial = DB.visitas.filter(v=>v.hecha || v.fecha<hoy).sort((a,b)=>(b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+
+  const pintaVisita = (v, esHistorial) => {
+    const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)', direccion:''};
+    const whoClass = v.who==='both'?'both':(v.who==='you'?'you':'wife');
+    const whoLabel = v.who==='both'?'Ambos':(v.who==='you'?'Tú':'Esposa');
+    return `
+      <div class="card">
+        <div class="visit-date">${formatFecha(v.fecha)} · ${v.hora}</div>
+        <h3>${lugar.nombre}</h3>
+        <p class="addr">${lugar.direccion}</p>
+        <div class="tags">
+          <span class="who-pill ${whoClass}">${whoLabel}</span>
+          ${v.notas ? `<span class="tag">${v.notas}</span>` : ''}
+          ${v.hecha ? `<span class="tag" style="color:var(--good)">✔ Realizada</span>`:''}
+        </div>
+        <div class="row-actions">
+          ${!esHistorial ? `<button class="btn btn-ghost" onclick="descargarICS('${v.id}')">+ Calendario iOS</button>` : ''}
+          ${!esHistorial ? `<button class="btn btn-primary" onclick="marcarHecha('${v.id}')">Ya fui</button>` : ''}
+          <button class="btn btn-danger" onclick="borrarVisita('${v.id}')">Borrar</button>
+        </div>
+      </div>
+    `;
+  };
+  document.getElementById('listaProximas').innerHTML = proximas.length
+    ? proximas.map(v=>pintaVisita(v,false)).join('')
+    : '<div class="empty">No tienes visitas programadas.</div>';
+  document.getElementById('listaHistorial').innerHTML = historial.length
+    ? historial.map(v=>pintaVisita(v,true)).join('')
+    : '<div class="empty">Sin historial todavía.</div>';
+
+  renderStats();
+}
+
+function formatFecha(f){
+  const d = new Date(f+'T00:00:00');
+  return d.toLocaleDateString('es-MX', {weekday:'short', day:'numeric', month:'short'});
+}
+
+// ---------- estadísticas ----------
+function renderStats(){
+  const conteoGym = {};
+  const conteoTipo = {};
+  DB.visitas.forEach(v=>{
+    conteoGym[v.gymId] = (conteoGym[v.gymId]||0)+1;
+    const g = CATALOGO.find(x=>x.id===v.gymId);
+    if(g) conteoTipo[g.categoria] = (conteoTipo[g.categoria]||0)+1;
+  });
+
+  const topGyms = Object.entries(conteoGym).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  document.getElementById('statTop').innerHTML = topGyms.length ? topGyms.map(([id,n])=>{
+    const g = CATALOGO.find(x=>x.id===id);
+    return `<div class="stat-row"><span class="stat-name">${g?g.nombre:'(borrado)'}</span><span class="stat-num">${n} visita${n>1?'s':''}</span></div>`;
+  }).join('') : '<div class="empty" style="padding:10px;">Aún no hay visitas registradas.</div>';
+
+  const topTipos = Object.entries(conteoTipo).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('statTipo').innerHTML = topTipos.length ? topTipos.map(([t,n])=>
+    `<div class="stat-row"><span class="stat-name">${t}</span><span class="stat-num">${n}</span></div>`
+  ).join('') : '<div class="empty" style="padding:10px;">Aún no hay datos.</div>';
+
+  const favs = CATALOGO.filter(g=>DB.favoritos.includes(g.id));
+  document.getElementById('statFav').innerHTML = favs.length ? favs.map(g=>
+    `<div class="stat-row"><span class="stat-name">❤️ ${g.nombre}</span><span class="stat-num">${g.categoria}</span></div>`
+  ).join('') : '<div class="empty" style="padding:10px;">No has marcado favoritos aún.</div>';
+
+  const noVisitados = CATALOGO.filter(g=>!conteoGym[g.id]);
+  document.getElementById('statNoVisit').innerHTML = `
+    <div class="stat-row"><span class="stat-name">Total sin visitar</span><span class="stat-num">${noVisitados.length} / ${CATALOGO.length}</span></div>
+    <div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px;">
+      ${noVisitados.slice(0,15).map(g=>`<span class="tag">${g.nombre}</span>`).join('')}
+      ${noVisitados.length>15 ? `<span class="tag">+${noVisitados.length-15} más</span>` : ''}
+    </div>
+  `;
+}
+
+// ---------- compartir ----------
+function compartirResumen(){
+  const hoy = new Date().toISOString().slice(0,10);
+  const proximas = DB.visitas.filter(v=>!v.hecha && v.fecha>=hoy).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  if(proximas.length===0){ toast('No hay visitas próximas para compartir'); return; }
+  let texto = `📅 Mi plan de gym:\n\n`;
+  proximas.forEach(v=>{
+    const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)'};
+    const whoLabel = v.who==='both'?'Ambos':(v.who==='you'?'Tú':'Esposa');
+    texto += `• ${formatFecha(v.fecha)} ${v.hora} - ${lugar.nombre} (${whoLabel})\n`;
+  });
+  if(navigator.share){
+    navigator.share({title:'Mi plan de gym', text:texto}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(texto);
+    toast('Copiado al portapapeles');
+  }
+}
+function generarExport(){
+  document.getElementById('exportBox').value = btoa(unescape(encodeURIComponent(JSON.stringify(DB))));
+  toast('Código generado');
+}
+function copiarExport(){
+  const box = document.getElementById('exportBox');
+  if(!box.value){ generarExport(); }
+  box.select();
+  navigator.clipboard.writeText(box.value);
+  toast('Copiado, ahora envíaselo a tu esposa');
+}
+function importarDatos(){
+  const val = document.getElementById('importBox').value.trim();
+  if(!val){ toast('Pega un código primero'); return; }
+  try{
+    const incoming = JSON.parse(decodeURIComponent(escape(atob(val))));
+    const idsVisitas = new Set(DB.visitas.map(v=>v.id));
+    (incoming.visitas||[]).forEach(v=>{ if(!idsVisitas.has(v.id)) DB.visitas.push(v); });
+    (incoming.favoritos||[]).forEach(id=>{ if(!DB.favoritos.includes(id)) DB.favoritos.push(id); });
+    save();
+    render();
+    document.getElementById('importBox').value='';
+    toast('Datos combinados ✔');
+  }catch(e){
+    toast('Código inválido');
+  }
+}
+
+// ---------- init ----------
+render();
+</script>
+</body>
+</html>
