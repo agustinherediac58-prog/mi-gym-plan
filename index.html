@@ -171,6 +171,9 @@
     <div class="row-actions" id="modalGymTelWrap" style="margin-bottom:6px;">
       <a class="btn btn-ghost" id="modalGymTel" href="#">📞 Llamar para reservar</a>
     </div>
+    <div class="row-actions" style="margin-bottom:6px;">
+      <a class="btn btn-primary" id="modalGymWellhub" target="_blank" href="#">🟣 Reservar en Wellhub</a>
+    </div>
     <hr style="border-color:var(--line); margin:14px 0;">
     <label>Fecha</label>
     <input id="visitaFecha" type="date">
@@ -178,8 +181,8 @@
     <input id="visitaHora" type="time" value="07:00">
     <label>¿Quién va?</label>
     <div class="who-select">
-      <div class="who-opt" id="whoYou" onclick="setWho('you')">Tú</div>
-      <div class="who-opt" id="whoWife" onclick="setWho('wife')">Esposa</div>
+      <div class="who-opt" id="whoYou" onclick="setWho('you')">Agus</div>
+      <div class="who-opt" id="whoWife" onclick="setWho('wife')">Pao</div>
       <div class="who-opt" id="whoBoth" onclick="setWho('both')">Ambos</div>
     </div>
     <label>Notas (opcional)</label>
@@ -335,6 +338,12 @@ function linkFotos(g){
   return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(g.nombre + ' ' + g.direccion);
 }
 
+// ---------- link a Wellhub ----------
+function linkWellhub(g){
+  if(g.wellhub && g.wellhub.startsWith('http')) return g.wellhub;
+  return 'https://www.google.com/search?q=' + encodeURIComponent('site:wellhub.com ' + g.nombre + ' ' + (g.zona||''));
+}
+
 // ---------- favoritos ----------
 function toggleFav(id){
   const i = DB.favoritos.indexOf(id);
@@ -355,6 +364,7 @@ function abrirModalVisita(gymId){
   `;
   document.getElementById('modalGymMapa').href = 'https://maps.apple.com/?q='+encodeURIComponent(gymActivo.direccion);
   document.getElementById('modalGymFotos').href = linkFotos(gymActivo);
+  document.getElementById('modalGymWellhub').href = linkWellhub(gymActivo);
   const redesEl = document.getElementById('modalGymRedes');
   if(gymActivo.redes && gymActivo.redes.startsWith('http')){
     redesEl.href = gymActivo.redes; redesEl.style.display='inline-block';
@@ -412,7 +422,7 @@ function descargarICS(visitaId){
   const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)', direccion:''};
   const dt = v.fecha.replace(/-/g,'') + 'T' + v.hora.replace(':','') + '00';
   const dtEnd = v.fecha.replace(/-/g,'') + 'T' + String(parseInt(v.hora.split(':')[0])+1).padStart(2,'0') + v.hora.split(':')[1] + '00';
-  const who = v.who==='both' ? 'Tú y tu esposa' : (v.who==='you' ? 'Tú' : 'Tu esposa');
+  const who = v.who==='both' ? 'Agus y Pao' : (v.who==='you' ? 'Agus' : 'Pao');
   const ics = [
     'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MiGymPlan//ES',
     'BEGIN:VEVENT',
@@ -487,7 +497,7 @@ function render(){
   const pintaVisita = (v, esHistorial) => {
     const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)', direccion:''};
     const whoClass = v.who==='both'?'both':(v.who==='you'?'you':'wife');
-    const whoLabel = v.who==='both'?'Ambos':(v.who==='you'?'Tú':'Esposa');
+    const whoLabel = v.who==='both'?'Ambos':(v.who==='you'?'Agus':'Pao');
     return `
       <div class="card">
         <div class="visit-date">${formatFecha(v.fecha)} · ${v.hora}</div>
