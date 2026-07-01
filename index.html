@@ -30,10 +30,10 @@
   .tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;}
   .tag{font-size:11px; background:var(--card2); color:var(--muted); padding:3px 8px; border-radius:20px;}
   .plan-tag{font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; color:#111;}
-  .plan-Basic\+{background:var(--basic);}
+  .plan-Basicplus{background:var(--basic); color:#0a2b16;}
   .plan-Silver{background:var(--silver);}
   .plan-Gold{background:var(--gold);}
-  .plan-Gold\+{background:var(--goldplus); color:#fff;}
+  .plan-Goldplus{background:var(--goldplus); color:#fff;}
   .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
   .btn{flex:1; min-width:80px; text-align:center; padding:9px; border-radius:10px; font-size:13px; font-weight:600; border:none; text-decoration:none; display:inline-block;}
   .btn-primary{background:linear-gradient(120deg,var(--hero1),var(--hero2)); color:#fff;}
@@ -83,11 +83,6 @@
   .stat-name{font-size:14px;}
   .stat-num{font-size:14px; font-weight:700; color:var(--accent2);}
   .modal-gym-header{margin-bottom:4px;}
-  .progress-track{background:var(--card2); border-radius:20px; height:10px; overflow:hidden; margin:8px 0 4px;}
-  .progress-fill{height:100%; background:linear-gradient(90deg,var(--good),var(--accent2)); border-radius:20px; transition:width .3s;}
-  .progress-label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted);}
-  .credits-input{display:flex; align-items:center; gap:8px; margin-top:10px;}
-  .credits-input input{width:70px; flex:none; padding:8px; text-align:center;}
   .dist-tag{background:rgba(0,217,163,.15); color:var(--good); font-weight:700;}
   .week-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:14px;}
   .week-day{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 4px; text-align:center; min-height:64px;}
@@ -112,11 +107,6 @@
     <div class="card" style="padding:12px 14px; margin-bottom:12px;">
       <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mi plan activo este mes</div>
       <div class="chips" id="chipsMiPlan"></div>
-      <div class="credits-input">
-        <label style="margin:0; font-size:12px; color:var(--muted); flex:1;">Visitas incluidas al mes</label>
-        <input type="number" id="inputLimiteVisitas" placeholder="Ej. 20" oninput="setLimiteVisitas(this.value)">
-      </div>
-      <div id="progresoCreditos"></div>
     </div>
     <div class="row-actions" style="margin-bottom:10px;">
       <button class="btn btn-ghost" id="btnCercania" onclick="pedirUbicacion()">📍 Ordenar por cercanía</button>
@@ -242,7 +232,6 @@ let filtroTipo = 'Todos';
 let filtroPlan = 'Todos';
 let filtroZona = 'Todas';
 let miPlan = localStorage.getItem('gymplan_miplan') || null;
-let limiteVisitas = localStorage.getItem('gymplan_limite') || '';
 let gymActivo = null;
 let miUbicacion = null;
 let ordenCercania = false;
@@ -253,30 +242,6 @@ function setMiPlan(p){
   miPlan = (miPlan===p) ? null : p;
   if(miPlan) localStorage.setItem('gymplan_miplan', miPlan); else localStorage.removeItem('gymplan_miplan');
   render();
-}
-
-function setLimiteVisitas(v){
-  limiteVisitas = v;
-  localStorage.setItem('gymplan_limite', v);
-  renderProgresoCreditos();
-}
-
-function renderProgresoCreditos(){
-  const el = document.getElementById('progresoCreditos');
-  const input = document.getElementById('inputLimiteVisitas');
-  if(input && document.activeElement!==input) input.value = limiteVisitas;
-  const limite = parseInt(limiteVisitas);
-  if(!limite || limite<=0){ el.innerHTML=''; return; }
-  const hoy = new Date();
-  const usadas = DB.visitas.filter(v=>{
-    const f = new Date(v.fecha+'T00:00:00');
-    return f.getMonth()===hoy.getMonth() && f.getFullYear()===hoy.getFullYear();
-  }).length;
-  const pct = Math.min(100, Math.round((usadas/limite)*100));
-  el.innerHTML = `
-    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-    <div class="progress-label"><span>${usadas} de ${limite} visitas usadas este mes</span><span>${pct}%</span></div>
-  `;
 }
 
 // ---------- distancia ----------
@@ -384,7 +349,7 @@ function abrirModalVisita(gymId){
   document.getElementById('modalGymNombre').textContent = gymActivo.nombre;
   document.getElementById('modalGymDireccion').textContent = gymActivo.direccion;
   document.getElementById('modalGymTags').innerHTML = `
-    <span class="plan-tag plan-${gymActivo.planNombre.replace('+','\\\\+')}">${planLabel(gymActivo.planNombre)}</span>
+    <span class="plan-tag plan-${gymActivo.planNombre.replace('+','plus')}">${planLabel(gymActivo.planNombre)}</span>
     <span class="tag">${gymActivo.categoria}</span>
     ${gymActivo.zona ? `<span class="tag">📍 ${gymActivo.zona}</span>` : ''}
   `;
@@ -473,7 +438,6 @@ function descargarICS(visitaId){
 function render(){
   construirChips();
   renderFrase();
-  renderProgresoCreditos();
   const q = (document.getElementById('buscador').value || '').toLowerCase();
   let lista = CATALOGO.filter(g=>{
     if(filtroTipo!=='Todos' && g.categoria!==filtroTipo) return false;
@@ -501,7 +465,7 @@ function render(){
         <h3>${g.nombre}</h3>
         <p class="addr">📍 ${g.zona ? g.zona+' — ' : ''}${g.direccion}</p>
         <div class="tags">
-          <span class="plan-tag plan-${g.planNombre.replace('+','\\+')}">${planLabel(g.planNombre)}</span>
+          <span class="plan-tag plan-${g.planNombre.replace('+','plus')}">${planLabel(g.planNombre)}</span>
           <span class="tag">${g.categoria}</span>
           ${g._dist!==undefined ? `<span class="tag dist-tag">📍 ${g._dist.toFixed(1)} km</span>` : ''}
           ${g.nota ? `<span class="tag">${g.nota}</span>` : ''}
