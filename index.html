@@ -11,19 +11,16 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ff7a00'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='white' font-family='Arial'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E">
 <style>
   :root{
-    --bg:#0f1115; --card:#1a1d24; --card2:#20242c; --accent:#ff7a00; --accent2:#ffb347;
-    --text:#f2f2f2; --muted:#9aa0ab; --line:#2a2e37; --good:#3ddc84; --you:#4da6ff; --wife:#ff6fae;
-    --basic:#8bc34a; --silver:#b0bec5; --gold:#ffca28; --goldplus:#ff8a00;
+    --bg:#0a0e14; --card:#131a24; --card2:#1a2330; --accent:#FF5F3C; --accent2:#FFB238;
+    --text:#f4f6f8; --muted:#8a94a3; --line:#232d3b; --good:#00D9A3; --you:#4DA6FF; --wife:#FF6FAE;
+    --basic:#5FD08A; --silver:#B9C3CE; --gold:#FFC93C; --goldplus:#FF5F3C;
+    --hero1:#FF5F3C; --hero2:#F72585; --hero3:#7B2FF7;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{margin:0; font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); padding-bottom:90px;}
-  header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg,var(--bg) 85%,transparent); padding:14px 16px 8px;}
-  h1{font-size:19px; margin:0 0 2px; display:flex; align-items:center; gap:8px;}
-  .sub{color:var(--muted); font-size:12px; margin:0;}
-  .profile-bar{display:flex; gap:8px; margin-top:10px;}
-  .profile-btn{flex:1; padding:9px; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--muted); font-size:13px; font-weight:600; text-align:center;}
-  .profile-btn.active.you{background:var(--you); color:#fff; border-color:var(--you);}
-  .profile-btn.active.wife{background:var(--wife); color:#fff; border-color:var(--wife);}
+  header{position:sticky; top:0; z-index:10; padding:calc(env(safe-area-inset-top) + 18px) 16px 16px; background:linear-gradient(120deg, var(--hero1), var(--hero2) 55%, var(--hero3)); box-shadow:0 4px 20px rgba(247,37,133,.25);}
+  h1{font-size:20px; margin:0 0 2px; display:flex; align-items:center; gap:8px; color:#fff; font-weight:800; letter-spacing:-.3px;}
+  .sub{color:rgba(255,255,255,.85); font-size:12px; margin:0;}
   main{padding:0 16px;}
   section{display:none;}
   section.active{display:block;}
@@ -39,11 +36,11 @@
   .plan-Gold\+{background:var(--goldplus); color:#fff;}
   .row-actions{display:flex; gap:8px; flex-wrap:wrap;}
   .btn{flex:1; min-width:80px; text-align:center; padding:9px; border-radius:10px; font-size:13px; font-weight:600; border:none; text-decoration:none; display:inline-block;}
-  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-primary{background:linear-gradient(120deg,var(--hero1),var(--hero2)); color:#fff;}
   .btn-ghost{background:var(--card2); color:var(--text);}
   .btn-danger{background:#3a2020; color:#ff8080;}
   .fav-heart{position:absolute; top:14px; right:14px; font-size:20px; background:none; border:none; cursor:pointer; line-height:1;}
-  .fab-add{position:fixed; bottom:80px; right:16px; width:56px; height:56px; border-radius:50%; background:var(--accent); color:#fff; font-size:28px; border:none; box-shadow:0 6px 20px rgba(255,122,0,.4); z-index:20;}
+  .fab-add{position:fixed; bottom:80px; right:16px; width:56px; height:56px; border-radius:50%; background:linear-gradient(120deg,var(--hero1),var(--hero2)); color:#fff; font-size:28px; border:none; box-shadow:0 6px 20px rgba(247,37,133,.4); z-index:20;}
   nav{position:fixed; bottom:0; left:0; right:0; background:#14161c; border-top:1px solid var(--line); display:flex; padding:6px 6px calc(6px + env(safe-area-inset-bottom)); z-index:20;}
   nav button{flex:1; background:none; border:none; color:var(--muted); font-size:10.5px; padding:8px 0; display:flex; flex-direction:column; align-items:center; gap:2px;}
   nav button.active{color:var(--accent);}
@@ -86,6 +83,20 @@
   .stat-name{font-size:14px;}
   .stat-num{font-size:14px; font-weight:700; color:var(--accent2);}
   .modal-gym-header{margin-bottom:4px;}
+  .progress-track{background:var(--card2); border-radius:20px; height:10px; overflow:hidden; margin:8px 0 4px;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,var(--good),var(--accent2)); border-radius:20px; transition:width .3s;}
+  .progress-label{display:flex; justify-content:space-between; font-size:12px; color:var(--muted);}
+  .credits-input{display:flex; align-items:center; gap:8px; margin-top:10px;}
+  .credits-input input{width:70px; flex:none; padding:8px; text-align:center;}
+  .dist-tag{background:rgba(0,217,163,.15); color:var(--good); font-weight:700;}
+  .week-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:14px;}
+  .week-day{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 4px; text-align:center; min-height:64px;}
+  .week-day.today{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent);}
+  .week-day .wd-label{font-size:10px; color:var(--muted); text-transform:uppercase; font-weight:700;}
+  .week-day .wd-num{font-size:14px; font-weight:700; margin:2px 0 4px;}
+  .week-dot{width:7px; height:7px; border-radius:50%; margin:1px auto; background:var(--accent2);}
+  .week-dot.you{background:var(--you);} .week-dot.wife{background:var(--wife);} .week-dot.both{background:var(--good);}
+  .hero-motiv{background:linear-gradient(120deg, rgba(255,95,60,.15), rgba(247,37,133,.15)); border:1px solid rgba(247,37,133,.3); border-radius:16px; padding:14px; margin-bottom:14px; font-size:13px; color:var(--text); text-align:center; font-weight:600;}
 </style>
 </head>
 <body>
@@ -97,9 +108,18 @@
 
 <main>
   <section id="sec-gyms" class="active">
+    <div class="hero-motiv" id="fraseMotivacional"></div>
     <div class="card" style="padding:12px 14px; margin-bottom:12px;">
       <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mi plan activo este mes</div>
       <div class="chips" id="chipsMiPlan"></div>
+      <div class="credits-input">
+        <label style="margin:0; font-size:12px; color:var(--muted); flex:1;">Visitas incluidas al mes</label>
+        <input type="number" id="inputLimiteVisitas" placeholder="Ej. 20" oninput="setLimiteVisitas(this.value)">
+      </div>
+      <div id="progresoCreditos"></div>
+    </div>
+    <div class="row-actions" style="margin-bottom:10px;">
+      <button class="btn btn-ghost" id="btnCercania" onclick="pedirUbicacion()">📍 Ordenar por cercanía</button>
     </div>
     <input class="search-box" id="buscador" placeholder="🔍 Buscar por nombre o zona..." oninput="render()">
     <div class="chip-label">Actividad</div>
@@ -113,6 +133,8 @@
   </section>
 
   <section id="sec-calendario">
+    <div class="section-title">Esta semana</div>
+    <div class="week-grid" id="weekGrid"></div>
     <div class="section-title">Próximas visitas</div>
     <div id="listaProximas"></div>
     <div class="section-title">Historial</div>
@@ -137,40 +159,12 @@
       <div id="statNoVisit"></div>
     </div>
   </section>
-
-  <section id="sec-compartir">
-    <div class="card">
-      <h3>📤 Compartir tu plan</h3>
-      <p class="addr">Envía tu semana a tu esposa por WhatsApp / Mensajes.</p>
-      <div class="row-actions">
-        <button class="btn btn-primary" onclick="compartirResumen()">Compartir resumen</button>
-      </div>
-    </div>
-    <div class="card">
-      <h3>🔄 Sincronizar datos</h3>
-      <p class="addr">Cada quién usa la app en su propio celular. Genera tu código y envíaselo a tu esposa; ella lo pega para combinar visitas, favoritos e historial (y así las estadísticas reflejan a ambos).</p>
-      <div class="share-box">
-        <label>Tu código de datos</label>
-        <textarea id="exportBox" readonly rows="3"></textarea>
-        <div class="row-actions" style="margin-top:8px;">
-          <button class="btn btn-ghost" onclick="generarExport()">Generar código</button>
-          <button class="btn btn-primary" onclick="copiarExport()">Copiar</button>
-        </div>
-      </div>
-      <div class="share-box">
-        <label>Pegar código recibido para combinar</label>
-        <textarea id="importBox" rows="3" placeholder="Pega aquí el código que te compartieron"></textarea>
-        <button class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="importarDatos()">Combinar datos</button>
-      </div>
-    </div>
-  </section>
 </main>
 
 <nav>
   <button class="active" id="tabGyms" onclick="cambiarTab('gyms')"><span class="ic">🏋️</span>Gyms</button>
   <button id="tabCalendario" onclick="cambiarTab('calendario')"><span class="ic">📅</span>Calendario</button>
   <button id="tabStats" onclick="cambiarTab('stats')"><span class="ic">📊</span>Stats</button>
-  <button id="tabCompartir" onclick="cambiarTab('compartir')"><span class="ic">🔗</span>Compartir</button>
 </nav>
 
 <!-- Modal: Detalle gym / Reservar -->
@@ -211,7 +205,7 @@
 
 <script>
 // ---------- catálogo estático (de tu Excel) ----------
-const CATALOGO = [{"id": "g1", "nombre": "EK Bars", "nota": "Funcional", "tipo": "Hiit Funcional", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 111, Santa Cruz, 52140 Barrio, Méx., México", "plan": 299, "redes": "https://facebook.com/EKBars.MX", "telefono": "722 145 1376", "wellhub": "EK BARS Metepec - Santa Cruz"}, {"id": "g2", "nombre": "Mr Fit Metepec", "nota": "Barato", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 601, Zona Sin Asignación de Nombre de Col 1, 52169 Metepec, Méx., México", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Metepec - Zona Sin Asignación de Nombre de Colonia 1"}, {"id": "g3", "nombre": "Mr Fit Zina", "nota": "Barato", "tipo": "Gym", "zona": "Toluca", "direccion": "MrFit Zinacantepec - Google Maps", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Mx - San Miguel Zinacantepec"}, {"id": "g4", "nombre": "Jungle Gym", "nota": "Barato", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Prof.ª María del Refugio Alejandro Tarrello 435, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/jungle_gym.fitness/", "telefono": "729 723 0398", "wellhub": "Jungle Gym - Delegación San Buenaventura"}, {"id": "g5", "nombre": "Dynamic Gym", "nota": "Nice", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Alpinismo (Profra. Ma. del Refugio Alejandro Tarrello) 323, San Antonio Buenavista, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/dynamic_gym.oficial_/", "telefono": "722 317 4499", "wellhub": "Dynamic Gym - San Antonio Buenavista"}, {"id": "g6", "nombre": "Gym Mom Rose", "nota": "box", "tipo": "Box/Gym", "zona": "Alpinismo", "direccion": "Jesús Reyes Heroles 1203, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.facebook.com/p/gym-mom-rose-100090310705365/", "telefono": "722 314 0382", "wellhub": "Gym Mom Rose - Delegación San Buenaventura"}, {"id": "g7", "nombre": "Envision Fitness", "nota": "Nice", "tipo": "Gym", "zona": "Limoncito", "direccion": "Envision Fitness Culture - Google Maps", "plan": 299, "redes": "https://instagram.com/envisionmx", "telefono": "55 1234 5678", "wellhub": "Envision Fitness Culture - San Felipe Tlalmimilolpan"}, {"id": "g8", "nombre": "Capital fitness toluca", "nota": "", "tipo": "Otro", "zona": "Colon", "direccion": "Calle Gral. Venustiano Carranza 20 Pte. 800, Residencial Colón y Col Ciprés, 50120 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://facebook.com/capitalgymmx", "telefono": "722 719 8034", "wellhub": "Capital Fitness Toluca - Toluca de Lerdo"}, {"id": "g9", "nombre": "9 Round Metepec", "nota": "", "tipo": "Box", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 299, "redes": "https://9round.mx/", "telefono": "722 271 0780", "wellhub": "9 Round - Metepec - Metepec"}, {"id": "g10", "nombre": "Fitsi samara", "nota": "", "tipo": "gym", "zona": "Samara santa fe", "direccion": "Antonio Dovali Jaime 70, Santa Fe, Zedec Sta Fé, Álvaro Obregón, 01376 Ciudad de México, CDMX, México", "plan": 299, "redes": "https://fitsi.com.mx", "telefono": "55 3907 0477", "wellhub": "Fitsi Samara - Santa Fe"}, {"id": "g11", "nombre": "Black Mamba", "nota": "box", "tipo": "Box", "zona": "Metepec", "direccion": "C. Ceboruco Manzana 029, Colonia Solidaridad Electricistas, 52168 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://instagram.com/blackmambammabox", "telefono": "722 221 7974", "wellhub": "Black Mamba - Colonia Solidaridad Electricistas"}, {"id": "g12", "nombre": "Cuantico", "nota": "Nice", "tipo": "Multi", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52150 Metepec, Méx Metepec, Manzana 032, Coaxustenco, 52150 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://linktr.ee/cuanticowellness?fbclid=paq0xdswlsoudlehrua2flbqixmqabpy1eu1z9hoprx54pki_r1euak6e49zhmfl5d4ye1u53i7sx98wqgptfq2f8x_aem_7qzuucllfy2u14fixtzmvq", "telefono": "722 474 7902", "wellhub": "Cuantico Wellness - Coaxustenco"}, {"id": "g13", "nombre": "Performa", "nota": "Nice", "tipo": "Funcional", "zona": "Toluca", "direccion": "CF722-Fitness CrossFit Strength & Conditioning - Google Maps", "plan": 549, "redes": "https://performa.mx/", "telefono": "722 245 5583", "wellhub": "Performa - Toluca de Lerdo"}, {"id": "g14", "nombre": "Spider Padel", "nota": "", "tipo": "Padel", "zona": "Metepec", "direccion": "794M+VPW MZ 077, México", "plan": 899, "redes": "https://www.spiderpadel.com/", "telefono": "720 882 8189", "wellhub": "Spider Padel Metepec - Zona Sin Asignación de Nombre de Colonia 1"}, {"id": "g15", "nombre": "Zentro studio", "nota": "Nice", "tipo": "Cycling", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52140 Metepec, Méx., Mexico", "plan": 899, "redes": "https://zentrostudio.com/", "telefono": "722 804 8008", "wellhub": "Zentro Studio - Coaxustenco"}, {"id": "g16", "nombre": "AZZERO studio", "nota": "Nice", "tipo": "Boxx", "zona": "Metepec", "direccion": "C. Leona Vicario 936, La Purisima, 52156 San Francisco Coaxusco, Méx., México", "plan": 899, "redes": "https://azzerostudio.mx/", "telefono": "722 212 7557", "wellhub": "AZZERO studio - La Purisima"}, {"id": "g17", "nombre": "SFC Metepec", "nota": "Nice", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 761, La Purisima, 52169 Toluca de Lerdo, Méx., México", "plan": 899, "redes": "https://www.facebook.com/p/Supreme-Fitness-Club-61556648472042/", "telefono": "722 162 6955", "wellhub": "Supreme Fitness Club Metepec - La Purisima"}, {"id": "g18", "nombre": "Move Cycling studio", "nota": "Nice", "tipo": "Otro", "zona": "Metepec", "direccion": "Plaza venecia", "plan": 899, "redes": "https://www.instagram.com/move.cyclingstudio", "telefono": "722 437 5081", "wellhub": "Move Cycling Studio Plaza Venecia - Santa Cruz"}, {"id": "g19", "nombre": "Cypro", "nota": "", "tipo": "Cycling", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "telefono": "722 708 2691", "wellhub": "Cypro Indoor Cycling Studio - Providencia, La-colonia-"}, {"id": "g20", "nombre": "One Indoor Studio", "nota": "", "tipo": "Cycling", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 899, "redes": "https://oneindoorstudio.com", "telefono": "722 375 4190", "wellhub": "One Indoor Studio - San Salvador Tizatlali"}, {"id": "g21", "nombre": "One More Rep", "nota": "", "tipo": "Gym Nice", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622-Local 33, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "https://instagram.com/1.morerep.fs", "telefono": "722 168 3182", "wellhub": "One More Rep Fitness Studio - Providencia, La-colonia-"}, {"id": "g22", "nombre": "TRYHARD Training Club", "nota": "", "tipo": "Hyrox", "zona": "", "direccion": "C. Juan Aldama 909-4 4to Piso, Centro, 50000 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://www.instagram.com/tryhardtrainingclub/", "telefono": "56 6802 7605", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-training-club-centro/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub"}, {"id": "g23", "nombre": "TRYHARD GYM", "nota": "Nice", "tipo": "Gym Ciclo Hyrox", "zona": "Colon", "direccion": "C. Juan Aldama 909, Francisco Murguía, 50130 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://instagram.com/tryhard_mexico", "telefono": "722 486 9873", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-gym-francisco-murguia/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub"}, {"id": "g24", "nombre": "Smart Fit Zentrika", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Lateral Autopista México-Toluca 1235, Lomas de Santa Fe, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Zentrika - Wellhub"}, {"id": "g25", "nombre": "Smart Fit Patio Santa Fe", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma 400, Santa Fe, Peña Blanca, Álvaro Obregón, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Patio Santa Fe - Wellhub"}, {"id": "g26", "nombre": "9 Round - Samara", "nota": "Box/HIIT", "tipo": "Box / HIIT", "zona": "Santa Fe", "direccion": "Antonio Dovalí Jaime 70, Ready to Fit Samara Shops, Santa Fe, CDMX", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5292 8490", "wellhub": "9 Round Samara - Wellhub"}, {"id": "g27", "nombre": "Okinawa Karate Do", "nota": "Artes Marciales", "tipo": "Artes Marciales", "zona": "Santa Fe", "direccion": "Av. Santa Fe, Contadero, Cuajimalpa de Morelos, CDMX", "plan": 549, "redes": "https://www.okinawakaratedo.com.mx/", "telefono": "", "wellhub": "Okinawa Karate Do Santa Fe"}, {"id": "g28", "nombre": "ADN Gym - Interlomas", "nota": "Pesos Libres", "tipo": "Gym", "zona": "Interlomas", "direccion": "Hacienda de las Palmas, Huixquilucan, EdoMex", "plan": 549, "redes": "https://www.instagram.com/adngym_/", "telefono": "", "wellhub": "ADN Gym Interlomas"}, {"id": "g29", "nombre": "9 Round - Centtral", "nota": "HIIT Funcional", "tipo": "Box / HIIT", "zona": "Interlomas", "direccion": "Blvd. Interlomas 5, Centtral Interlomas, Huixquilucan, EdoMex", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5925 0244", "wellhub": "9 Round Centtral Interlomas"}, {"id": "g30", "nombre": "Action Black Interlomas", "nota": "HIIT Premium", "tipo": "Funcional / HIIT", "zona": "Interlomas", "direccion": "Paseo Interlomas, Vialidad de la Barranca, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/actionblack.co/", "telefono": "", "wellhub": "Action Black Interlomas"}, {"id": "g31", "nombre": "SM Martial Arts & Workout", "nota": "Box/Funcional", "tipo": "Boxeo / Funcional", "zona": "Interlomas", "direccion": "Av. Interlomas, San Fernando, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/smmartialarts/", "telefono": "", "wellhub": "SM Martial Arts - Wellhub"}, {"id": "g32", "nombre": "Neon Fitness Club", "nota": "Tradicional", "tipo": "Gym", "zona": "Toluca Centro", "direccion": "C. Primero de Mayo 300, Centro, 50000 Toluca de Lerdo, Méx.", "plan": 299, "redes": "https://www.facebook.com/NeonFitnessClub/", "telefono": "722 214 4321", "wellhub": "Neon Fitness Club Toluca"}, {"id": "g33", "nombre": "CrossFit Neos", "nota": "Fuerza / WOD", "tipo": "Crossfit", "zona": "Toluca Centro", "direccion": "Av. Pino Suárez 405, Centro, Toluca de Lerdo, Méx.", "plan": 899, "redes": "https://www.instagram.com/crossfitneos/", "telefono": "722 581 2190", "wellhub": "CrossFit Neos - Wellhub"}, {"id": "g34", "nombre": "Move Cycling Studio", "nota": "Indoor Cycling", "tipo": "Cycling / HIIT", "zona": "Plaza Colón", "direccion": "Paseo Colón 302, Residencial Colón, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/movecyclingstudio/", "telefono": "722 914 2035", "wellhub": "Move Cycling Studio Colón"}, {"id": "g35", "nombre": "Jiraf Authentic Pilates", "nota": "Pilates Reformer", "tipo": "Pilates", "zona": "Plaza Juárez", "direccion": "Ignacio López Rayón 202, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/jirafpilates/", "telefono": "", "wellhub": "Jiraf Authentic Pilates"}, {"id": "g36", "nombre": "Ventura Fitness Toluca", "nota": "Pesos / Cardio", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Benito Juárez García 410, Centro, Toluca, Méx.", "plan": 549, "redes": "https://www.instagram.com/venturafitness/", "telefono": "722 190 4455", "wellhub": "Ventura Fitness - Wellhub"}, {"id": "g37", "nombre": "FitBeat Lab Toluca", "nota": "Yoga/Pilates", "tipo": "Estudio", "zona": "Zona Centro", "direccion": "Calle Aquiles Serdán 104, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/fitbeatlab/", "telefono": "", "wellhub": "FitBeat Lab Toluca"}, {"id": "g38", "nombre": "Gravity Center Gym", "nota": "Cardio/Fuerza", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Heriberto Enríquez 602, Ceboruco, Toluca, Méx.", "plan": 299, "redes": "https://www.facebook.com/GravityCenterGym/", "telefono": "722 217 0981", "wellhub": "Gravity Center Gym - Wellhub"}, {"id": "g39", "nombre": "Sportium Desierto de los Leones", "nota": "Club con Alberca/Gym", "tipo": "Club / Alberca", "zona": "Desierto de los Leones", "direccion": "Calz. Desierto de los Leones 5525, Olivar de los Padres, CDMX", "plan": 899, "redes": "https://www.instagram.com/sportium_mx/", "telefono": "55 1000 2500", "wellhub": "Sportium Desierto de los Leones"}, {"id": "g40", "nombre": "Pádel Club Metepec", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Metepec", "direccion": "Av. Tecnológico, San Jerónimo Chicahualco, Metepec", "plan": 899, "redes": "https://www.instagram.com/padelclub/", "telefono": "N/A", "wellhub": "Pádel Club Metepec - Wellhub"}, {"id": "g41", "nombre": "Winner Padel Santa Fe", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Santa Fe", "direccion": "Vasco de Quiroga 3800, Santa Fe, CDMX", "plan": 899, "redes": "https://www.instagram.com/winnerpadel/", "telefono": "N/A", "wellhub": "Winner Padel Santa Fe"}, {"id": "g42", "nombre": "Padel Toluca Centro", "nota": "Canchas Indoor", "tipo": "Pádel", "zona": "Toluca", "direccion": "Paseo Tollocan, Col. Vértice, Toluca", "plan": 549, "redes": "https://www.instagram.com/padeltoluca/", "telefono": "N/A", "wellhub": "Padel Toluca - Wellhub"}, {"id": "g43", "nombre": "Centro Acuático Metepec", "nota": "Alberca Techada / Natación", "tipo": "Alberca", "zona": "Metepec", "direccion": "Av. Estado de México, Barrio de San Miguel, Metepec", "plan": 549, "redes": "N/A", "telefono": "722 235 0122", "wellhub": "Centro Acuático Metepec"}, {"id": "g44", "nombre": "Acuática Zinacantepec", "nota": "Alberca Semiolímpica", "tipo": "Alberca", "zona": "Zinacantepec", "direccion": "Circuito Vial Acahualco, San Miguel Zinacantepec", "plan": 299, "redes": "N/A", "telefono": "722 123 4567", "wellhub": "Acuática Zinacantepec - Wellhub"}, {"id": "g45", "nombre": "Swim & Fitness Santa Fe", "nota": "Alberca Climatizada", "tipo": "Alberca / Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma, Santa Fe, CDMX", "plan": 899, "redes": "N/A", "telefono": "N/A", "wellhub": "Swim & Fitness Santa Fe"}, {"id": "g46", "nombre": "Acuática Interlomas", "nota": "Natación / Aqua HIIT", "tipo": "Alberca", "zona": "Interlomas", "direccion": "Vialidad de la Barranca, Interlomas, Huixquilucan", "plan": 899, "redes": "https://www.instagram.com/acuatica_interlomas/", "telefono": "55 5245 1122", "wellhub": "Acuática Interlomas"}];
+const CATALOGO = [{"id": "g1", "nombre": "EK Bars", "nota": "Funcional", "tipo": "Hiit Funcional", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 111, Santa Cruz, 52140 Barrio, Méx., México", "plan": 299, "redes": "https://facebook.com/EKBars.MX", "telefono": "722 145 1376", "wellhub": "EK BARS Metepec - Santa Cruz", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g2", "nombre": "Mr Fit Metepec", "nota": "Barato", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 601, Zona Sin Asignación de Nombre de Col 1, 52169 Metepec, Méx., México", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Metepec - Zona Sin Asignación de Nombre de Colonia 1", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g3", "nombre": "Mr Fit Zina", "nota": "Barato", "tipo": "Gym", "zona": "Toluca", "direccion": "MrFit Zinacantepec - Google Maps", "plan": 299, "redes": "https://www.instagram.com/mrfitmx/?hl=en", "telefono": "720 316 2684", "wellhub": "MrFit Mx - San Miguel Zinacantepec", "lat": 19.292545, "lon": -99.6569007}, {"id": "g4", "nombre": "Jungle Gym", "nota": "Barato", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Prof.ª María del Refugio Alejandro Tarrello 435, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/jungle_gym.fitness/", "telefono": "729 723 0398", "wellhub": "Jungle Gym - Delegación San Buenaventura", "lat": 19.2612651, "lon": -99.6900771}, {"id": "g5", "nombre": "Dynamic Gym", "nota": "Nice", "tipo": "Gym", "zona": "Alpinismo", "direccion": "Alpinismo (Profra. Ma. del Refugio Alejandro Tarrello) 323, San Antonio Buenavista, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.instagram.com/dynamic_gym.oficial_/", "telefono": "722 317 4499", "wellhub": "Dynamic Gym - San Antonio Buenavista", "lat": 19.2612651, "lon": -99.6900771}, {"id": "g6", "nombre": "Gym Mom Rose", "nota": "box", "tipo": "Box/Gym", "zona": "Alpinismo", "direccion": "Jesús Reyes Heroles 1203, Delegación San Buenaventura, 50110 San Buenaventura, Méx., México", "plan": 299, "redes": "https://www.facebook.com/p/gym-mom-rose-100090310705365/", "telefono": "722 314 0382", "wellhub": "Gym Mom Rose - Delegación San Buenaventura", "lat": 19.2612651, "lon": -99.6900771}, {"id": "g7", "nombre": "Envision Fitness", "nota": "Nice", "tipo": "Gym", "zona": "Limoncito", "direccion": "Envision Fitness Culture - Google Maps", "plan": 299, "redes": "https://instagram.com/envisionmx", "telefono": "55 1234 5678", "wellhub": "Envision Fitness Culture - San Felipe Tlalmimilolpan", "lat": 19.2512772, "lon": -99.6410766}, {"id": "g8", "nombre": "Capital fitness toluca", "nota": "", "tipo": "Otro", "zona": "Colon", "direccion": "Calle Gral. Venustiano Carranza 20 Pte. 800, Residencial Colón y Col Ciprés, 50120 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://facebook.com/capitalgymmx", "telefono": "722 719 8034", "wellhub": "Capital Fitness Toluca - Toluca de Lerdo", "lat": 19.2442951, "lon": -99.6637609}, {"id": "g9", "nombre": "9 Round Metepec", "nota": "", "tipo": "Box", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 299, "redes": "https://9round.mx/", "telefono": "722 271 0780", "wellhub": "9 Round - Metepec - Metepec", "lat": 19.2436588, "lon": -99.5781655}, {"id": "g10", "nombre": "Fitsi samara", "nota": "", "tipo": "gym", "zona": "Samara santa fe", "direccion": "Antonio Dovali Jaime 70, Santa Fe, Zedec Sta Fé, Álvaro Obregón, 01376 Ciudad de México, CDMX, México", "plan": 299, "redes": "https://fitsi.com.mx", "telefono": "55 3907 0477", "wellhub": "Fitsi Samara - Santa Fe", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g11", "nombre": "Black Mamba", "nota": "box", "tipo": "Box", "zona": "Metepec", "direccion": "C. Ceboruco Manzana 029, Colonia Solidaridad Electricistas, 52168 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://instagram.com/blackmambammabox", "telefono": "722 221 7974", "wellhub": "Black Mamba - Colonia Solidaridad Electricistas", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g12", "nombre": "Cuantico", "nota": "Nice", "tipo": "Multi", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52150 Metepec, Méx Metepec, Manzana 032, Coaxustenco, 52150 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://linktr.ee/cuanticowellness?fbclid=paq0xdswlsoudlehrua2flbqixmqabpy1eu1z9hoprx54pki_r1euak6e49zhmfl5d4ye1u53i7sx98wqgptfq2f8x_aem_7qzuucllfy2u14fixtzmvq", "telefono": "722 474 7902", "wellhub": "Cuantico Wellness - Coaxustenco", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g13", "nombre": "Performa", "nota": "Nice", "tipo": "Funcional", "zona": "Toluca", "direccion": "CF722-Fitness CrossFit Strength & Conditioning - Google Maps", "plan": 549, "redes": "https://performa.mx/", "telefono": "722 245 5583", "wellhub": "Performa - Toluca de Lerdo", "lat": 19.292545, "lon": -99.6569007}, {"id": "g14", "nombre": "Spider Padel", "nota": "", "tipo": "Padel", "zona": "Metepec", "direccion": "794M+VPW MZ 077, México", "plan": 899, "redes": "https://www.spiderpadel.com/", "telefono": "720 882 8189", "wellhub": "Spider Padel Metepec - Zona Sin Asignación de Nombre de Colonia 1", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g15", "nombre": "Zentro studio", "nota": "Nice", "tipo": "Cycling", "zona": "Metepec", "direccion": "C. Leona Vicario 386, Coaxustenco, 52140 Metepec, Méx., Mexico", "plan": 899, "redes": "https://zentrostudio.com/", "telefono": "722 804 8008", "wellhub": "Zentro Studio - Coaxustenco", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g16", "nombre": "AZZERO studio", "nota": "Nice", "tipo": "Boxx", "zona": "Metepec", "direccion": "C. Leona Vicario 936, La Purisima, 52156 San Francisco Coaxusco, Méx., México", "plan": 899, "redes": "https://azzerostudio.mx/", "telefono": "722 212 7557", "wellhub": "AZZERO studio - La Purisima", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g17", "nombre": "SFC Metepec", "nota": "Nice", "tipo": "Gym", "zona": "Metepec", "direccion": "Av. Lic. Benito Juárez García 761, La Purisima, 52169 Toluca de Lerdo, Méx., México", "plan": 899, "redes": "https://www.facebook.com/p/Supreme-Fitness-Club-61556648472042/", "telefono": "722 162 6955", "wellhub": "Supreme Fitness Club Metepec - La Purisima", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g18", "nombre": "Move Cycling studio", "nota": "Nice", "tipo": "Otro", "zona": "Metepec", "direccion": "Plaza venecia", "plan": 899, "redes": "https://www.instagram.com/move.cyclingstudio", "telefono": "722 437 5081", "wellhub": "Move Cycling Studio Plaza Venecia - Santa Cruz", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g19", "nombre": "Cypro", "nota": "", "tipo": "Cycling", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "Av. de los Gobernadores 1622 nte, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "telefono": "722 708 2691", "wellhub": "Cypro Indoor Cycling Studio - Providencia, La-colonia-", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g20", "nombre": "One Indoor Studio", "nota": "", "tipo": "Cycling", "zona": "Mtecnologico", "direccion": "Av Tecnológico 863, San Salvador Tizatlali, 52172 Metepec, Méx., México", "plan": 899, "redes": "https://oneindoorstudio.com", "telefono": "722 375 4190", "wellhub": "One Indoor Studio - San Salvador Tizatlali", "lat": 19.2436588, "lon": -99.5781655}, {"id": "g21", "nombre": "One More Rep", "nota": "", "tipo": "Gym Nice", "zona": "Metepec", "direccion": "Av. de los Gobernadores 1622-Local 33, Providencia, La-colonia-, La Providencia, 52177 Metepec, Méx., México", "plan": 899, "redes": "https://instagram.com/1.morerep.fs", "telefono": "722 168 3182", "wellhub": "One More Rep Fitness Studio - Providencia, La-colonia-", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g22", "nombre": "TRYHARD Training Club", "nota": "", "tipo": "Hyrox", "zona": "", "direccion": "C. Juan Aldama 909-4 4to Piso, Centro, 50000 Toluca de Lerdo, Méx., México", "plan": 549, "redes": "https://www.instagram.com/tryhardtrainingclub/", "telefono": "56 6802 7605", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-training-club-centro/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub", "lat": 19.2703462, "lon": -99.6412324}, {"id": "g23", "nombre": "TRYHARD GYM", "nota": "Nice", "tipo": "Gym Ciclo Hyrox", "zona": "Colon", "direccion": "C. Juan Aldama 909, Francisco Murguía, 50130 Toluca de Lerdo, Méx., México", "plan": 299, "redes": "https://instagram.com/tryhard_mexico", "telefono": "722 486 9873", "wellhub": "https://wellhub.com/es-mx/search/partners/tryhard-gym-francisco-murguia/?utm_term=paid-wh-wellhub&gad_source=1&gclid=Cj0KCQjw9ZLSBhCcARIsAEhGKgMBlFZ8nJNQiO61miEQixY091PEbtR4Ug3__nXyzDIRucY8tyTnwcIaAhLJEALw_wcB&utm_campaign=latam-mx_b2c-b2b_google-search-agnostic_con_ongoing_all_signup_1223&utm_medium=cpc&utm_source=google&utm_content=None-None-None-EM-Text-Brand_Wellhub", "lat": 19.2442951, "lon": -99.6637609}, {"id": "g24", "nombre": "Smart Fit Zentrika", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Lateral Autopista México-Toluca 1235, Lomas de Santa Fe, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Zentrika - Wellhub", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g25", "nombre": "Smart Fit Patio Santa Fe", "nota": "Gym Completo", "tipo": "Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma 400, Santa Fe, Peña Blanca, Álvaro Obregón, CDMX", "plan": 549, "redes": "https://www.instagram.com/smartfitmx/", "telefono": "", "wellhub": "Smart Fit Patio Santa Fe - Wellhub", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g26", "nombre": "9 Round - Samara", "nota": "Box/HIIT", "tipo": "Box / HIIT", "zona": "Santa Fe", "direccion": "Antonio Dovalí Jaime 70, Ready to Fit Samara Shops, Santa Fe, CDMX", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5292 8490", "wellhub": "9 Round Samara - Wellhub", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g27", "nombre": "Okinawa Karate Do", "nota": "Artes Marciales", "tipo": "Artes Marciales", "zona": "Santa Fe", "direccion": "Av. Santa Fe, Contadero, Cuajimalpa de Morelos, CDMX", "plan": 549, "redes": "https://www.okinawakaratedo.com.mx/", "telefono": "", "wellhub": "Okinawa Karate Do Santa Fe", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g28", "nombre": "ADN Gym - Interlomas", "nota": "Pesos Libres", "tipo": "Gym", "zona": "Interlomas", "direccion": "Hacienda de las Palmas, Huixquilucan, EdoMex", "plan": 549, "redes": "https://www.instagram.com/adngym_/", "telefono": "", "wellhub": "ADN Gym Interlomas", "lat": 19.4024249, "lon": -99.2720745}, {"id": "g29", "nombre": "9 Round - Centtral", "nota": "HIIT Funcional", "tipo": "Box / HIIT", "zona": "Interlomas", "direccion": "Blvd. Interlomas 5, Centtral Interlomas, Huixquilucan, EdoMex", "plan": 299, "redes": "https://9round.mx/", "telefono": "55 5925 0244", "wellhub": "9 Round Centtral Interlomas", "lat": 19.4024249, "lon": -99.2720745}, {"id": "g30", "nombre": "Action Black Interlomas", "nota": "HIIT Premium", "tipo": "Funcional / HIIT", "zona": "Interlomas", "direccion": "Paseo Interlomas, Vialidad de la Barranca, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/actionblack.co/", "telefono": "", "wellhub": "Action Black Interlomas", "lat": 19.4024249, "lon": -99.2720745}, {"id": "g31", "nombre": "SM Martial Arts & Workout", "nota": "Box/Funcional", "tipo": "Boxeo / Funcional", "zona": "Interlomas", "direccion": "Av. Interlomas, San Fernando, Huixquilucan, EdoMex", "plan": 899, "redes": "https://www.instagram.com/smmartialarts/", "telefono": "", "wellhub": "SM Martial Arts - Wellhub", "lat": 19.4024249, "lon": -99.2720745}, {"id": "g32", "nombre": "Neon Fitness Club", "nota": "Tradicional", "tipo": "Gym", "zona": "Toluca Centro", "direccion": "C. Primero de Mayo 300, Centro, 50000 Toluca de Lerdo, Méx.", "plan": 299, "redes": "https://www.facebook.com/NeonFitnessClub/", "telefono": "722 214 4321", "wellhub": "Neon Fitness Club Toluca", "lat": 19.2703462, "lon": -99.6412324}, {"id": "g33", "nombre": "CrossFit Neos", "nota": "Fuerza / WOD", "tipo": "Crossfit", "zona": "Toluca Centro", "direccion": "Av. Pino Suárez 405, Centro, Toluca de Lerdo, Méx.", "plan": 899, "redes": "https://www.instagram.com/crossfitneos/", "telefono": "722 581 2190", "wellhub": "CrossFit Neos - Wellhub", "lat": 19.2703462, "lon": -99.6412324}, {"id": "g34", "nombre": "Move Cycling Studio", "nota": "Indoor Cycling", "tipo": "Cycling / HIIT", "zona": "Plaza Colón", "direccion": "Paseo Colón 302, Residencial Colón, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/movecyclingstudio/", "telefono": "722 914 2035", "wellhub": "Move Cycling Studio Colón", "lat": 19.2442951, "lon": -99.6637609}, {"id": "g35", "nombre": "Jiraf Authentic Pilates", "nota": "Pilates Reformer", "tipo": "Pilates", "zona": "Plaza Juárez", "direccion": "Ignacio López Rayón 202, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/jirafpilates/", "telefono": "", "wellhub": "Jiraf Authentic Pilates", "lat": 19.2703462, "lon": -99.6412324}, {"id": "g36", "nombre": "Ventura Fitness Toluca", "nota": "Pesos / Cardio", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Benito Juárez García 410, Centro, Toluca, Méx.", "plan": 549, "redes": "https://www.instagram.com/venturafitness/", "telefono": "722 190 4455", "wellhub": "Ventura Fitness - Wellhub", "lat": 19.292545, "lon": -99.6569007}, {"id": "g37", "nombre": "FitBeat Lab Toluca", "nota": "Yoga/Pilates", "tipo": "Estudio", "zona": "Zona Centro", "direccion": "Calle Aquiles Serdán 104, Centro, Toluca, Méx.", "plan": 899, "redes": "https://www.instagram.com/fitbeatlab/", "telefono": "", "wellhub": "FitBeat Lab Toluca", "lat": 19.2703462, "lon": -99.6412324}, {"id": "g38", "nombre": "Gravity Center Gym", "nota": "Cardio/Fuerza", "tipo": "Gym", "zona": "Toluca", "direccion": "Av. Heriberto Enríquez 602, Ceboruco, Toluca, Méx.", "plan": 299, "redes": "https://www.facebook.com/GravityCenterGym/", "telefono": "722 217 0981", "wellhub": "Gravity Center Gym - Wellhub", "lat": 19.292545, "lon": -99.6569007}, {"id": "g39", "nombre": "Sportium Desierto de los Leones", "nota": "Club con Alberca/Gym", "tipo": "Club / Alberca", "zona": "Desierto de los Leones", "direccion": "Calz. Desierto de los Leones 5525, Olivar de los Padres, CDMX", "plan": 899, "redes": "https://www.instagram.com/sportium_mx/", "telefono": "55 1000 2500", "wellhub": "Sportium Desierto de los Leones", "lat": 19.3453672, "lon": -99.2111511}, {"id": "g40", "nombre": "Pádel Club Metepec", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Metepec", "direccion": "Av. Tecnológico, San Jerónimo Chicahualco, Metepec", "plan": 899, "redes": "https://www.instagram.com/padelclub/", "telefono": "N/A", "wellhub": "Pádel Club Metepec - Wellhub", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g41", "nombre": "Winner Padel Santa Fe", "nota": "Canchas de Pádel", "tipo": "Pádel", "zona": "Santa Fe", "direccion": "Vasco de Quiroga 3800, Santa Fe, CDMX", "plan": 899, "redes": "https://www.instagram.com/winnerpadel/", "telefono": "N/A", "wellhub": "Winner Padel Santa Fe", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g42", "nombre": "Padel Toluca Centro", "nota": "Canchas Indoor", "tipo": "Pádel", "zona": "Toluca", "direccion": "Paseo Tollocan, Col. Vértice, Toluca", "plan": 549, "redes": "https://www.instagram.com/padeltoluca/", "telefono": "N/A", "wellhub": "Padel Toluca - Wellhub", "lat": 19.292545, "lon": -99.6569007}, {"id": "g43", "nombre": "Centro Acuático Metepec", "nota": "Alberca Techada / Natación", "tipo": "Alberca", "zona": "Metepec", "direccion": "Av. Estado de México, Barrio de San Miguel, Metepec", "plan": 549, "redes": "N/A", "telefono": "722 235 0122", "wellhub": "Centro Acuático Metepec", "lat": 19.2511338, "lon": -99.5937281}, {"id": "g44", "nombre": "Acuática Zinacantepec", "nota": "Alberca Semiolímpica", "tipo": "Alberca", "zona": "Zinacantepec", "direccion": "Circuito Vial Acahualco, San Miguel Zinacantepec", "plan": 299, "redes": "N/A", "telefono": "722 123 4567", "wellhub": "Acuática Zinacantepec - Wellhub", "lat": 19.2027704, "lon": -99.8135235}, {"id": "g45", "nombre": "Swim & Fitness Santa Fe", "nota": "Alberca Climatizada", "tipo": "Alberca / Gym", "zona": "Santa Fe", "direccion": "Prol. Paseo de la Reforma, Santa Fe, CDMX", "plan": 899, "redes": "N/A", "telefono": "N/A", "wellhub": "Swim & Fitness Santa Fe", "lat": 19.3610393, "lon": -99.2612571}, {"id": "g46", "nombre": "Acuática Interlomas", "nota": "Natación / Aqua HIIT", "tipo": "Alberca", "zona": "Interlomas", "direccion": "Vialidad de la Barranca, Interlomas, Huixquilucan", "plan": 899, "redes": "https://www.instagram.com/acuatica_interlomas/", "telefono": "55 5245 1122", "wellhub": "Acuática Interlomas", "lat": 19.4024249, "lon": -99.2720745}];
 
 const COSTO_PLAN = {'Basic+':299.90,'Silver':549.90,'Gold':899.90,'Gold+':1299.90};
 function planNombre(costo){
@@ -248,7 +242,10 @@ let filtroTipo = 'Todos';
 let filtroPlan = 'Todos';
 let filtroZona = 'Todas';
 let miPlan = localStorage.getItem('gymplan_miplan') || null;
+let limiteVisitas = localStorage.getItem('gymplan_limite') || '';
 let gymActivo = null;
+let miUbicacion = null;
+let ordenCercania = false;
 
 function save(){ localStorage.setItem('gymplan_db', JSON.stringify(DB)); }
 
@@ -256,6 +253,70 @@ function setMiPlan(p){
   miPlan = (miPlan===p) ? null : p;
   if(miPlan) localStorage.setItem('gymplan_miplan', miPlan); else localStorage.removeItem('gymplan_miplan');
   render();
+}
+
+function setLimiteVisitas(v){
+  limiteVisitas = v;
+  localStorage.setItem('gymplan_limite', v);
+  renderProgresoCreditos();
+}
+
+function renderProgresoCreditos(){
+  const el = document.getElementById('progresoCreditos');
+  const input = document.getElementById('inputLimiteVisitas');
+  if(input && document.activeElement!==input) input.value = limiteVisitas;
+  const limite = parseInt(limiteVisitas);
+  if(!limite || limite<=0){ el.innerHTML=''; return; }
+  const hoy = new Date();
+  const usadas = DB.visitas.filter(v=>{
+    const f = new Date(v.fecha+'T00:00:00');
+    return f.getMonth()===hoy.getMonth() && f.getFullYear()===hoy.getFullYear();
+  }).length;
+  const pct = Math.min(100, Math.round((usadas/limite)*100));
+  el.innerHTML = `
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label"><span>${usadas} de ${limite} visitas usadas este mes</span><span>${pct}%</span></div>
+  `;
+}
+
+// ---------- distancia ----------
+function haversine(lat1,lon1,lat2,lon2){
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLon = (lon2-lon1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function pedirUbicacion(){
+  if(!navigator.geolocation){ toast('Tu navegador no soporta ubicación'); return; }
+  const btn = document.getElementById('btnCercania');
+  btn.textContent = 'Buscando ubicación...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    miUbicacion = {lat:pos.coords.latitude, lon:pos.coords.longitude};
+    ordenCercania = true;
+    btn.textContent = '📍 Ordenado por cercanía';
+    render();
+  }, err=>{
+    toast('No se pudo obtener tu ubicación');
+    btn.textContent = '📍 Ordenar por cercanía';
+  });
+}
+
+// ---------- frase motivacional ----------
+const FRASES_MOTIVACION = [
+  '💥 Un entreno hoy vale más que dos mañana.',
+  '🔥 Tu única competencia es quien fuiste ayer.',
+  '💪 El plan ya está pagado, falta que lo uses.',
+  '⚡ Pequeños pasos, resultados grandes.',
+  '🏆 La constancia le gana al talento.',
+  '🌟 Hoy es buen día para moverse.',
+  '🚀 Ve por ese check-in de la semana.'
+];
+function renderFrase(){
+  const el = document.getElementById('fraseMotivacional');
+  if(!el) return;
+  const idx = new Date().getDate() % FRASES_MOTIVACION.length;
+  el.textContent = FRASES_MOTIVACION[idx];
 }
 
 function toast(msg){
@@ -411,6 +472,8 @@ function descargarICS(visitaId){
 // ---------- render catálogo ----------
 function render(){
   construirChips();
+  renderFrase();
+  renderProgresoCreditos();
   const q = (document.getElementById('buscador').value || '').toLowerCase();
   let lista = CATALOGO.filter(g=>{
     if(filtroTipo!=='Todos' && g.categoria!==filtroTipo) return false;
@@ -421,6 +484,10 @@ function render(){
     if(q && !(g.nombre.toLowerCase().includes(q) || g.zona.toLowerCase().includes(q))) return false;
     return true;
   });
+  if(ordenCercania && miUbicacion){
+    lista.forEach(g=> g._dist = haversine(miUbicacion.lat, miUbicacion.lon, g.lat, g.lon));
+    lista.sort((a,b)=> a._dist - b._dist);
+  }
   document.getElementById('resultCount').textContent = lista.length + ' gyms encontrados';
   const lg = document.getElementById('listaGyms');
   if(lista.length===0){
@@ -436,6 +503,7 @@ function render(){
         <div class="tags">
           <span class="plan-tag plan-${g.planNombre.replace('+','\\+')}">${planLabel(g.planNombre)}</span>
           <span class="tag">${g.categoria}</span>
+          ${g._dist!==undefined ? `<span class="tag dist-tag">📍 ${g._dist.toFixed(1)} km</span>` : ''}
           ${g.nota ? `<span class="tag">${g.nota}</span>` : ''}
         </div>
         <div class="row-actions">
@@ -481,12 +549,40 @@ function render(){
     ? historial.map(v=>pintaVisita(v,true)).join('')
     : '<div class="empty">Sin historial todavía.</div>';
 
+  renderWeekGrid();
   renderStats();
 }
 
 function formatFecha(f){
   const d = new Date(f+'T00:00:00');
   return d.toLocaleDateString('es-MX', {weekday:'short', day:'numeric', month:'short'});
+}
+
+// ---------- vista semanal ----------
+function renderWeekGrid(){
+  const el = document.getElementById('weekGrid');
+  if(!el) return;
+  const hoy = new Date();
+  const diaSemana = (hoy.getDay()+6)%7; // lunes=0
+  const lunes = new Date(hoy);
+  lunes.setDate(hoy.getDate()-diaSemana);
+  const nombresDia = ['L','M','M','J','V','S','D'];
+  let html = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(lunes);
+    d.setDate(lunes.getDate()+i);
+    const fecha = d.toISOString().slice(0,10);
+    const esHoy = fecha === hoy.toISOString().slice(0,10);
+    const visitasDia = DB.visitas.filter(v=>v.fecha===fecha);
+    html += `
+      <div class="week-day ${esHoy?'today':''}">
+        <div class="wd-label">${nombresDia[i]}</div>
+        <div class="wd-num">${d.getDate()}</div>
+        ${visitasDia.map(v=>`<div class="week-dot ${v.who}"></div>`).join('')}
+      </div>
+    `;
+  }
+  el.innerHTML = html;
 }
 
 // ---------- estadísticas ----------
@@ -523,52 +619,6 @@ function renderStats(){
       ${noVisitados.length>15 ? `<span class="tag">+${noVisitados.length-15} más</span>` : ''}
     </div>
   `;
-}
-
-// ---------- compartir ----------
-function compartirResumen(){
-  const hoy = new Date().toISOString().slice(0,10);
-  const proximas = DB.visitas.filter(v=>!v.hecha && v.fecha>=hoy).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
-  if(proximas.length===0){ toast('No hay visitas próximas para compartir'); return; }
-  let texto = `📅 Mi plan de gym:\n\n`;
-  proximas.forEach(v=>{
-    const lugar = CATALOGO.find(g=>g.id===v.gymId) || {nombre:'(gym borrado)'};
-    const whoLabel = v.who==='both'?'Ambos':(v.who==='you'?'Tú':'Esposa');
-    texto += `• ${formatFecha(v.fecha)} ${v.hora} - ${lugar.nombre} (${whoLabel})\n`;
-  });
-  if(navigator.share){
-    navigator.share({title:'Mi plan de gym', text:texto}).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(texto);
-    toast('Copiado al portapapeles');
-  }
-}
-function generarExport(){
-  document.getElementById('exportBox').value = btoa(unescape(encodeURIComponent(JSON.stringify(DB))));
-  toast('Código generado');
-}
-function copiarExport(){
-  const box = document.getElementById('exportBox');
-  if(!box.value){ generarExport(); }
-  box.select();
-  navigator.clipboard.writeText(box.value);
-  toast('Copiado, ahora envíaselo a tu esposa');
-}
-function importarDatos(){
-  const val = document.getElementById('importBox').value.trim();
-  if(!val){ toast('Pega un código primero'); return; }
-  try{
-    const incoming = JSON.parse(decodeURIComponent(escape(atob(val))));
-    const idsVisitas = new Set(DB.visitas.map(v=>v.id));
-    (incoming.visitas||[]).forEach(v=>{ if(!idsVisitas.has(v.id)) DB.visitas.push(v); });
-    (incoming.favoritos||[]).forEach(id=>{ if(!DB.favoritos.includes(id)) DB.favoritos.push(id); });
-    save();
-    render();
-    document.getElementById('importBox').value='';
-    toast('Datos combinados ✔');
-  }catch(e){
-    toast('Código inválido');
-  }
 }
 
 // ---------- init ----------
